@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(wsl python3 \"/home/dreyfus/cassa-talks-tart/.claude/skills/pdf-to-rag/_selftest.py\")",
+      "PowerShell(wsl python3 \"/home/dreyfus/cassa-talks-tart/.claude/skills/pdf-to-rag/_probe.py\")",
+      "PowerShell(wsl bash -lc \"python3 -c 'import fpdf;print\\(1\\)' 2>/dev/null && echo fpdf; python3 -c 'import reportlab;print\\(1\\)' 2>/dev/null && echo reportlab; command -v libreoffice >/dev/null && echo libreoffice; command -v pandoc >/dev/null && echo pandoc; command -v enscript >/dev/null && echo enscript; command -v ps2pdf >/dev/null && echo ps2pdf\")",
+      "PowerShell(wsl bash -lc \"cd /home/dreyfus/cassa-talks-tart/.claude/skills/pdf-to-rag && ps2pdf _sample.ps _sample.pdf && python3 pdf_rag.py index _sample.pdf && echo '--- QUERY: refund ---' && python3 pdf_rag.py query _sample.rag.json 'how do I get a refund' -k 1 && echo '--- QUERY: customs ---' && python3 pdf_rag.py query _sample.rag.json 'international customs fees' -k 1\")",
+      "PowerShell(wsl bash -lc \"cd /home/dreyfus/cassa-talks-tart/.claude/skills/pdf-to-rag && rm -f _selftest.py _probe.py _sample.ps _sample.pdf _sample.rag.json && ls -1\")",
+      "PowerShell(wsl bash -lc \"cd /home/dreyfus/cassa-talks-tart/.claude/skills/pdf-to-rag && rm -rf __pycache__ && ls -1\")",
+      "PowerShell(wsl bash -lc \"cd /home/dreyfus/cassa-talks-tart && ls -la resources/ 2>/dev/null | grep -i radio; echo '---'; ls resources/ 2>/dev/null | head -50\")",
+      "PowerShell(wsl bash -lc \"cd /home/dreyfus/cassa-talks-tart && time python3 .claude/skills/pdf-to-rag/pdf_rag.py index 'resources/An Introduction to Radio Astronomy \\(Burke & Graham-Smith, 3rd ed, 2013\\).pdf' --out resources/radio_astronomy.rag.json && python3 .claude/skills/pdf-to-rag/pdf_rag.py info resources/radio_astronomy.rag.json\")",
+      "PowerShell(wsl bash /home/dreyfus/cassa-talks-tart/.claude/skills/pdf-to-rag/_learn.sh \"brightness temperature Rayleigh-Jeans law flux density\" \"thermal bremsstrahlung free-free emission HII regions\" \"synchrotron radiation relativistic electrons magnetic field spectrum\" \"21 cm neutral hydrogen line spin flip transition\")"
+    ]
+  }
+}
