@@ -1,15 +1,15 @@
 * {
-	*   box-sizing: border-box;
-	*     margin: 0;
-	*       padding: 0;
-	*       }
-	*
-	*       body {
-		*         background-color: #f4f4f6;
-		*           font-family: system-ui, -apple-system, sans-serif;
-		*           }
-		*
-		*/* Ripped out of the DOM tree: pins directly to the monitor glass */
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+   body {
+		        background-color: #f4f4f6;
+		         font-family: system-ui, -apple-system, sans-serif;
+		           }
+		
+		
+		/* Ripped out of the DOM tree: pins directly to the monitor glass */
 		.deck-viewport {
 			  position: fixed;
 			    inset: 0; /* Shorthand: locks top, bottom, left, and right to 0px */
