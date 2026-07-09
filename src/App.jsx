@@ -52,6 +52,117 @@ save → rawdata/vis_<timestamp>.json`
   }
 },
 
+{
+  stage: "Stage 2 / 8", title: "Build the Measurement Set", layout: "triptych",
+  concept: { heading: "Why", points: [
+    "Raw JSON → standard radio dataset (MS).",
+    "Antenna positions give each baseline (u,v).",
+    "Phase centre = zenith at snapshot time."
+  ]},
+  algorithm: { heading: "Algorithm", code: `for baseline (i,j):
+    uvw  = ant[j] − ant[i]     # metres
+    data = re + i·im
+U,V = uvw / wavelength         # w ≈ 0 (coplanar)` },
+  recipe: { heading: "Stimela recipe", code: `create-ms:
+  cab: tart2ms
+  params:
+    ms: msdir/bd-iub.ms
+    rephase: obs-midpoint` }
+},
+{
+  stage: "Stage 3 / 8", title: "Model the Sky (RIME)", layout: "triptych",
+  concept: { heading: "Why", points: [
+    "Known GPS satellites = our 'guide stars'.",
+    "Predict their visibilities as point sources.",
+    "MODEL vs DATA drives calibration."
+  ]},
+  algorithm: { heading: "Algorithm", code: `for sat s above horizon:
+    l,m = cos(el)·sin(az), cos(el)·cos(az)
+MODEL_ij = Σ_s exp(−2πi(u·l + v·m))` },
+  recipe: { heading: "Stimela recipe", code: `create-ms:
+  cab: tart2ms
+  params:
+    add-model: true
+    write-model-catalog: true` }
+},
+{
+  stage: "Stage 4 / 8", title: "Calibrate the Gains", layout: "triptych",
+  concept: { heading: "Why", points: [
+    "Antennas have unknown gain + phase errors.",
+    "Solve gₚ so DATA ≈ gₚ·conj(g_q)·MODEL.",
+    "Amplitude first, then phase (StefCal)."
+  ]},
+  algorithm: { heading: "Algorithm", code: `# StefCal (alternating least squares)
+repeat:
+    z   = conj(g_q)·MODEL
+    g_p = Σ(DATA·conj(z)) / Σ|z|²
+normalise: mean|g| → 1` },
+  recipe: { heading: "Stimela recipe", code: `calibrate_amplitude:
+  cab: casa.gaincal
+  params: {calmode: a, solnorm: true}
+calibrate_phase:
+  cab: casa.gaincal
+  params: {calmode: p, solint: 10s}` }
+},
+{
+  stage: "Stage 5 / 8", title: "Apply Calibration", layout: "triptych",
+  concept: { heading: "Why", points: [
+    "Correct every visibility with solved gains.",
+    "CORRECTED = DATA / (gₚ·conj(g_q)).",
+    "Dead antennas flagged — never ÷ by ~0."
+  ]},
+  algorithm: { heading: "Algorithm", code: `denom     = g[ant1]·conj(g[ant2])
+CORRECTED = DATA / denom     # skip flagged` },
+  recipe: { heading: "Stimela recipe", code: `applycal:
+  cab: casa.applycal
+  params:
+    gaintable: [tart.G0a, tart.G0p]
+    flagbackup: true` }
+},
+{
+  stage: "Stage 6 / 8", title: "Weight the Visibilities", layout: "triptych",
+  concept: { heading: "Why", points: [
+    "Sparse (u,v) sampling → weight each sample.",
+    "Briggs 'robust': resolution vs noise trade.",
+    "robust = 0 → balanced."
+  ]},
+  algorithm: { heading: "Algorithm", code: `grid (u,v) → density Wₖ per cell
+w = 1 / (1 + Wₖ · f2)
+# f2 set by robust parameter` },
+  recipe: { heading: "Stimela recipe", code: `snapshotimage:
+  cab: wsclean
+  params:
+    weight: briggs 0.0` }
+},
+{
+  stage: "Stage 7 / 8", title: "Make the Dirty Image", layout: "triptych",
+  concept: { heading: "Why", points: [
+    "Fourier-invert visibilities → sky image.",
+    "Coplanar array (w=0) → exact direct DFT.",
+    "PSF = image of all-ones (the beam)."
+  ]},
+  algorithm: { heading: "Algorithm", code: `I(l,m) = Σ_bl w·Re( V·exp(+2πi(u·l + v·m)) )
+PSF    = same, with V = 1` },
+  recipe: { heading: "Stimela recipe", code: `snapshotimage:
+  cab: wsclean
+  params: {size: 1024, scale: 600asec, pol: RR}` }
+},
+{
+  stage: "Stage 8 / 8", title: "Deconvolve + Restore", layout: "triptych",
+  concept: { heading: "Why", points: [
+    "Dirty image = true sky ⊛ PSF.",
+    "CLEAN peels off PSF sidelobes iteratively.",
+    "Restore with clean beam → export FITS."
+  ]},
+  algorithm: { heading: "Algorithm", code: `# Cotton-Schwab CLEAN
+minor: subtract gain·PSF at brightest peak
+major: re-image exact residual
+restored = model ⊛ beam + residual` },
+  recipe: { heading: "Stimela recipe", code: `snapshotimage:
+  cab: wsclean
+  params: {niter: 5000, mgain: 0.95, auto-mask: 5}` }
+},
+
 
 
 
