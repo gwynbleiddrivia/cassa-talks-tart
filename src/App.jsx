@@ -32,6 +32,16 @@ const SLIDE_DATA = [
     layout: "interactive",
     instances: [ { sep: 0.87, ang: 109 }, { sep: 1.20, ang: 163 } ]
   },
+  {
+    stage: "The Map", title: "From Antennas to Calibrated Visibilities",
+    layout: "stack",
+    images: ["/uv1.png", "/uv2.png"]          // top + bottom
+  },
+  {
+    stage: "The Map", title: "The Complete uv-Map — and the To-Do List",
+    layout: "stack",
+    images: ["/uv3.png"]                        // slider drops in below this later
+  },
 
 
   {
@@ -241,12 +251,27 @@ export default function App() {
 
  */})
 
-{slide.layout === "interactive" ? (
+{slide.layout === "stack" ? (
+  <div className="slide-content">
+    <p className="stage-label">{slide.stage}</p>
+    <h1>{slide.title}</h1>
+    <div className="img-stack">
+      {slide.images.map((src, k) => <img key={k} src={src} alt="" />)}
+    </div>
+  </div>
+) : slide.layout === "interactive" ? (
+
   <div className="slide-content">
     <p className="stage-label">{slide.stage}</p>
     <h1>{slide.title}</h1>
     <p className="description">{slide.content}</p>
-    <div style={{ display: "flex", gap: 20, flexWrap: "wrap", justifyContent: "center" }}>
+    <div className="pair-row">
+      {(slide.instances ?? [{ size: 240 }]).map((it, k) => (
+        <BaselineExplorer key={k} sep={it.sep} ang={it.ang} size={it.size ?? 150} />
+      ))}
+    </div>
+
+
       {(slide.instances ?? [{ size: 240 }]).map((it, k) => (
         <BaselineExplorer key={k} sep={it.sep} ang={it.ang} size={it.size ?? 150} />
       ))}

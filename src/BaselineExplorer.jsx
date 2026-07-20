@@ -52,7 +52,8 @@ export default function BaselineExplorer({ sep: sep0 = 0.6, ang: ang0 = 30, size
   const panel = { display: "flex", flexDirection: "column", alignItems: "center" };
 
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", maxWidth: 820, margin: "0 auto" }}>
+        <div style={{ fontFamily: "system-ui, sans-serif" }}>
+
       <div style={{ display: "flex", gap: 24, flexWrap: "wrap", justifyContent: "center" }}>
 
         {/* ① ground */}
