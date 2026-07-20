@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-const N = 36;   // = the number Colab printed
+const N = 35;   // = the number Colab printed
 export default function FringeSlider() {
   const [i, setI] = useState(N - 1);
   useEffect(() => { for (let j = 0; j < N; j++) { const im = new Image(); im.src = `/frames/frames/frame_${String(j).padStart(3,"0")}.png`; } }, []);
