@@ -1,7 +1,7 @@
 import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import './App.css';
-
+import BaselineExplorer from "./BaselineExplorer";
 
 const SLIDE_DATA = [
   // ───────── SLIDES 1–5: interactive graphs (placeholders; you build these in Colab) ─────────
@@ -20,6 +20,12 @@ const SLIDE_DATA = [
     content: "Each pair of antennas (a baseline) measures one ripple of the sky. 24 antennas → 276 pairs, all at once.",
     formula: "◧ baselines → uv-plane graph — dropping in later"
   },
+    {
+    stage: "The Trick", title: "One Baseline, One Fringe — Try It",
+    content: "Move the two antennas apart, or turn them — watch the dot slide and the sky-fringe change. The whole idea, in your hands.",
+    layout: "interactive"
+  },
+
   {
     stage: "The Measurement", title: "One Baseline, One Fringe",
     content: "Each baseline reports a complex number — a visibility: how strong that ripple is (amplitude) and where it sits (phase).",
@@ -196,6 +202,8 @@ export default function App() {
 						              </div>
 
 */})
+({/**
+ * 
 {slide.layout === "triptych" ? (
   <div className="triptych">
     <div className="block concept">
@@ -222,6 +230,48 @@ export default function App() {
     <p className="ref-text">Stimela Step: {slide.notebookRef}</p>
   </div>
 )}
+
+ */})
+
+{slide.layout === "interactive" ? (
+  <div className="slide-content">
+    <p className="stage-label">{slide.stage}</p>
+    <h1>{slide.title}</h1>
+    <p className="description">{slide.content}</p>
+    <BaselineExplorer />
+  </div>
+) : slide.layout === "triptych" ? (
+  <div className="triptych">
+    <div className="block concept">
+      <p className="stage-label">{slide.stage}</p>
+      <h1>{slide.title}</h1>
+      <h2>{slide.concept.heading}</h2>
+      <ul>{slide.concept.points.map((p, k) => <li key={k}>{p}</li>)}</ul>
+    </div>
+    <div className="block algorithm">
+      <h2>{slide.algorithm.heading}</h2>
+      <pre>{slide.algorithm.code}</pre>
+    </div>
+    <div className="block recipe">
+      <h2>{slide.recipe.heading}</h2>
+      <pre>{slide.recipe.code}</pre>
+    </div>
+  </div>
+) : (
+  <div className="slide-content">
+    <p className="stage-label">{slide.stage}</p>
+    <h1>{slide.title}</h1>
+    <p className="description">{slide.content}</p>
+    <div className="math-box"><code>{slide.formula}</code></div>
+    <p className="ref-text">Stimela Step: {slide.notebookRef}</p>
+  </div>
+)}
+
+
+
+
+
+
 
 
 						            </div>

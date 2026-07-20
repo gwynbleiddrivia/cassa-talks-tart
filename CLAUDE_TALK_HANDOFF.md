@@ -1,4 +1,6 @@
-# TART TALK — BUILD HANDOFF v2 (paste this first in any new session)
+# TART TALK — BUILD HANDOFF (paste this first in any new session)
+# ►► v3: read the "SESSION-2 UPDATE" at the BOTTOM first — it has the CURRENT state
+#      (deploy done, deck built, revised plan, graphs next). The physics below is still valid.
 
 ## Session start checklist
 Re-attach these (files do NOT persist across sessions):
@@ -174,3 +176,80 @@ D. 24-hour: loop snapshots over 24 h, one image per hour -> the S1 slider.
   a time: matplotlib graph in Colab -> React slide in App.jsx.
 - OPEN QUESTION: S1 needs 24 hourly snapshots from the API (or archived h5) —
   confirm data availability before committing to that opener.
+
+---
+
+# ═══════════ SESSION-2 UPDATE (v3) — read this SECOND, it is the CURRENT state ═══════════
+
+## STATUS: deck is DEPLOYED & live; command slides BUILT; graphs are the next work.
+
+### Who / deployment (all DONE — continuous deployment works)
+- User = "Dreyfus" / Yasin (MYA Khondoker), Group 4, CASSA/IUB. Talk = the WHOLE
+  `talk_abstract.txt` (imaging + open data); a separate hardware talk is NOT his.
+- GitHub: `github.com/gwynbleiddrivia/cassa-talks-tart`, branch `main`, all pushed.
+- Host: **Vercel**, auto-deploys on every push (~30 s). Live URL: vercel.com → project → Visit.
+- Dev loop: WSL terminal → `npm run dev` (localhost:5173, hot reload) →
+  `git add -A && git commit -m "…" && git push` → live. Run git INSIDE WSL
+  (Windows git on `\\wsl$` throws "dubious ownership"). Docker dev is optional.
+- Stack: Vite + React + `qrcode.react`.
+
+### The deck (App.jsx / App.css) — current build
+- `SLIDE_DATA` array drives everything. Two render branches:
+  - simple (no `layout` field): centred title + description + grey math-box → the 5 intro graph placeholders.
+  - `layout:"triptych"`: 2×2 grid — LEFT `concept` (spans both rows) | TOP-RIGHT `algorithm` | BOTTOM-RIGHT `recipe`.
+- App.css: triptych grid; presentation fonts via `clamp(vw)` (KNOB = 3rd clamp value);
+  mobile ≤600px → single column, borderless, code in grey boxes; desktop ≥601px →
+  top-right LIGHT-GREY box + bottom-right DARK TERMINAL box.
+- **STANDING RULE: Claude does NOT edit App.jsx/App.css.** Give paste-ready blocks +
+  exact location; Dreyfus types them (learning full-stack). Graphs: Dreyfus runs
+  matplotlib in Colab on live data; Claude supplies snippets → then port to React.
+
+### REVISED SLIDE PLAN (this supersedes the S1–S7 *structure* above; the physics above still holds)
+- **Slides 1–5**: interactive graphs = interferometry essence + how the TART image forms
+  (built later in Colab; concepts = the old S1–S7: 24h slider, array, baselines, uv, fringe build-up).
+- **Slide 6**: dependency install — triptych (left=why, top-right=requirements, bottom-right=install cmds from STIMELA_RUN.md).
+- **Slides 7–14**: one interferometry stage each — triptych: LEFT = what the stage does,
+  TOP-RIGHT = plain-language algorithm (**NO Python**), BOTTOM-RIGHT = the real
+  `stimela run tart_dl.yaml tart=bd-iub -s <step>` command(s). Stages:
+  1 download-hdf | 2 create-ms | 3 updateobservatory+flagsave | 4 plotuv+plotants+lister |
+  5 calibrate_amplitude | 6 calibrate_phase | 7 applycal | 8 snapshotimage.
+  (Full paste-ready SLIDE_DATA was delivered and is in App.jsx.)
+- Stimela is SHOWN (commands) but **NOT run locally** (dependency horror). **ALL graphs
+  come from the pythonized notebook** `tart_stimela_pythonized_ecdf.py` (Colab, live API).
+
+### FOUR "after-stage" visualizations Dreyfus wants — ALL from the NOTEBOOK
+1+2. **THE MEASUREMENT SET.** The notebook's `ms` dict IS a minimal MS (ANTENNA1/2, UVW,
+   U, V, DATA, MODEL, CORRECTED). Show as a pandas table (amp+phase columns, not raw
+   complex). `ms["CORRECTED"]` only exists after the applycal cell → that IS "the extra
+   column calibration adds." ✅ tables generated (|DATA|==|CORRECTED|, phase moves).
+   NEXT: style into a slide (React table or matplotlib-table screenshot).
+3. **VISIBILITY ARROWS** on the uv-plane, BEFORE (`ms["DATA"]`) vs AFTER (`ms["CORRECTED"]`).
+   CRITICAL distinction: the uv DOT = baseline vector (fixed, calibration never moves it);
+   the ARROW drawn at it = the VISIBILITY (length=|V|, angle=phase(V)) — THAT rotates/rescales.
+   `quiver(u,v, |V|cos∠, |V|sin∠, color=∠)` + Hermitian mirror (−u,−v). BIG arrows.
+   In api-phase mode arrows only ROTATE (|V| unchanged). ← THE NEXT GRAPH TO BUILD.
+4. **FRINGE SUPERPOSITION slider** — sum the first n baselines' fringes (notebook `dft_image`
+   over first n), n=1→276 (→552 with mirrors); at n=all → the dirty image. THE payoff.
+   Interactive React slider on the real image.
+
+### PHASE-ONLY vs gain+phase (StefCal "solved") — SETTLED, use on the calibration slide
+- Proof in the table: |DATA| == |CORRECTED| to the last digit; only phase° moved → phase-only.
+- Two knobs per antenna: amplitude (loudness) + phase (clock offset). POSITION lives in PHASE
+  → phase must be right → phase-only nails positions.
+- Amplitude cal = DIVIDE by each antenna's gain; 4 dead antennas (gain≈0) → blows noise into
+  fake sources (the historical misalignment bug) → phase-only is the SAFE path.
+- TART has NO absolute flux scale (1-bit + solnorm) → amplitude cal buys no science.
+  StefCal "solved" fits BOTH |g| and phase (would rescale |V|), guarded by solnorm + flagging.
+
+### NEXT ACTION (resume exactly here)
+1. Style the MS table (#1/#2) into a slide.
+2. Build **#3 arrows** (spec above) in Colab → verify on real data → port to React.
+3. Build **#4 fringe-superposition slider** (the payoff).
+4. Later: real CASA MS screenshot (run `create-ms` somewhere) for authenticity; the 5 intro graphs.
+
+### Claude's TART skills & learned docs
+- Skills doc: `CASSA_TART_CLAUDE_SKILLS.md` (the `pdf-to-rag` skill; indexes at `resources/*.rag.json`, git-ignored).
+- Ground truth in repo: `TART_IMAGING_COURSE.md` (50-lesson course + Q&A), `STIMELA_RUN.md`
+  (install + per-step commands), `all_recipes.txt` (Stimela recipe), `tart_stimela_pythonized_ecdf.py` (pipeline logic).
+- Claude also persists cross-session memory (MEMORY.md index): user-yasin, tart-project-focus,
+  tart-imaging-pipeline, tart-talk-deck, pdf-token-efficiency.
