@@ -1,15 +1,17 @@
 import { useRef, useEffect, useState } from "react";
 
-const LAMBDA = 0.1903;          // m, GPS L1 — TART's real wavelength
+const LAMBDA = 0.1903;
 const BLUE = "#1f6feb";
-const S = 240, C = S / 2;       // panel size / centre
-const GROUND_SCALE = 120;       // px per metre  (max ~1.5 m -> 180 px)
-const UV_SCALE = 13;            // px per wavelength
+const MAX_SEP = 1.5;   // metres — matches the slider max
 
-export default function BaselineExplorer() {
-  const [sep, setSep] = useState(0.6);   // metres between the two antennas
-  const [ang, setAng] = useState(30);    // orientation of the pair (degrees)
+export default function BaselineExplorer({ sep: sep0 = 0.6, ang: ang0 = 30, size = 240 }) {
+  const [sep, setSep] = useState(sep0);
+  const [ang, setAng] = useState(ang0);
   const canvasRef = useRef(null);
+
+  const S = size, C = S / 2;
+  const GROUND_SCALE = (C - 16) / MAX_SEP;               // 1.5 m fits the panel
+  const UV_SCALE = (C - 16) / (MAX_SEP / LAMBDA);        // longest baseline fits
 
   const th = (ang * Math.PI) / 180;
   const lenWl = sep / LAMBDA;                 // baseline length in wavelengths

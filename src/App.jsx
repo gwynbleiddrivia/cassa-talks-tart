@@ -20,11 +20,19 @@ const SLIDE_DATA = [
     content: "Each pair of antennas (a baseline) measures one ripple of the sky. 24 antennas → 276 pairs, all at once.",
     formula: "◧ baselines → uv-plane graph — dropping in later"
   },
-    {
-    stage: "The Trick", title: "One Baseline, One Fringe — Try It",
-    content: "Move the two antennas apart, or turn them — watch the dot slide and the sky-fringe change. The whole idea, in your hands.",
-    layout: "interactive"
+   {
+    stage: "The Trick", title: "One Baseline → One Fringe",
+    content: "Two pairs, two fringes. Wider apart → dot further out → finer stripes.",
+    layout: "interactive",
+    instances: [ { sep: 0.30, ang: 40 }, { sep: 0.72, ang: 60 } ]
   },
+  {
+    stage: "The Trick", title: "Longer Baselines, Finer Fringes",
+    content: "Keep going — the longer the pair, the finer and more tilted the fringe.",
+    layout: "interactive",
+    instances: [ { sep: 0.87, ang: 109 }, { sep: 1.20, ang: 163 } ]
+  },
+
 
   {
     stage: "The Measurement", title: "One Baseline, One Fringe",
@@ -238,7 +246,11 @@ export default function App() {
     <p className="stage-label">{slide.stage}</p>
     <h1>{slide.title}</h1>
     <p className="description">{slide.content}</p>
-    <BaselineExplorer />
+    <div style={{ display: "flex", gap: 20, flexWrap: "wrap", justifyContent: "center" }}>
+      {(slide.instances ?? [{ size: 240 }]).map((it, k) => (
+        <BaselineExplorer key={k} sep={it.sep} ang={it.ang} size={it.size ?? 150} />
+      ))}
+    </div>
   </div>
 ) : slide.layout === "triptych" ? (
   <div className="triptych">
