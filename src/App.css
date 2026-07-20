@@ -61,7 +61,7 @@
 											        user-select: none;
 											}
 
-											.slide-content { margin: auto 0; max-width: 900px; }
+											.slide-content { margin: auto; max-width: 900px; }
 											.slide-footer { display: flex; justify-content: flex-end; }
 
 											.qr-container { display: flex; flex-direction: column; align-items: center; gap: 4px; }
