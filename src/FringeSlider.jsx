@@ -6,7 +6,9 @@ export default function FringeSlider() {
   const src = `/frames/frame_${String(i).padStart(3,"0")}.png`;
   return (
     <div style={{ textAlign: "center", width: "100%" }}>
-      <img src={src} alt="" style={{ maxWidth: "100%", height: "auto", borderRadius: 6 }} />
+      <img src={src} alt="" onError={() => console.log("missing:", src)}
+     style={{ maxWidth: "100%", height: "auto", borderRadius: 6 }} />
+
       <input type="range" min={0} max={N-1} value={i} onChange={e => setI(+e.target.value)} style={{ width: "85%", marginTop: 12 }} />
       <div style={{ fontFamily: "monospace", color: "#666", marginTop: 6 }}>drag → add baselines one by one</div>
     </div>
