@@ -46,6 +46,11 @@ const SLIDE_DATA = [
 
   { stage: "The Payoff", title: "Add the Fringes → the Sky Appears",
     layout: "stack", images: [], after: "slider" },
+  { stage: "The Payoff", title: "1 Baseline — Just Stripes",        layout: "stack", images: ["/sum1.png"] },
+  { stage: "The Payoff", title: "2 Baselines — a Lattice Appears",  layout: "stack", images: ["/sum2.png"] },
+  { stage: "The Payoff", title: "30 Baselines — the Centre Wins",   layout: "stack", images: ["/sum30.png"] },
+  { stage: "The Payoff", title: "150 Baselines — Sidelobes Fade",   layout: "stack", images: ["/sum150.png"] },
+  { stage: "The Payoff", title: "All Baselines — the Sky",          layout: "stack", images: ["/sumfull.png"] },
 
 
 
