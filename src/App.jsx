@@ -32,16 +32,19 @@ const SLIDE_DATA = [
     layout: "interactive",
     instances: [ { sep: 0.87, ang: 109 }, { sep: 1.20, ang: 163 } ]
   },
-  {
-    stage: "The Map", title: "From Antennas to Calibrated Visibilities",
-    layout: "stack",
-    images: ["/uv1.png", "/uv2.png"]          // top + bottom
-  },
-  {
-    stage: "The Map", title: "The Complete uv-Map — and the To-Do List",
-    layout: "stack",
-    images: ["/uv3.png"]                        // slider drops in below this later
-  },
+
+
+    { stage: "The Map", title: "A Baseline Becomes a Point",
+    layout: "stack", images: ["/uv1.png"] },
+  { stage: "The Map", title: "Calibration Rotates the Arrows",
+    layout: "stack", images: ["/uv2.png"] },
+  { stage: "The Map", title: "Corrected, Plus the Conjugate Twins",
+    layout: "stack", images: ["/uv3.png"] },
+  { stage: "The Map", title: "The Complete uv-Map — and the To-Do List",
+    layout: "stack", images: ["/uv4.png"] },
+
+
+
 
 
   {
