@@ -2,171 +2,165 @@ import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import './App.css';
 
+
 const SLIDE_DATA = [
-	  {
-		      stage: "Basics of Interferometry",
-		      title: "Measuring Visibilities",
-		      content: "An interferometer does not capture an image directly. Instead, every pair of antennas measures a single Fourier component (a visibility) of the sky brightness distribution. The relationship is defined by the Van Cittert-Zernike theorem.",
-		      formula: "V(u,v) = ∫∫ I(l,m) e^(-2πi(ul + vm)) dl dm",
-		      notebookRef: "cab: raw-data-download -> ms-create"
-		    },
-	  {
-		      stage: "Antenna Layout",
-		      title: "The Spatial Baseline Grid",
-		      content: "The Transient Array Radio Telescope (TART) utilizes a dense planar array. Each vector between two antennas forms a baseline (u, v) projected onto the incoming wavefront. More baselines equal denser sampling in the Fourier domain.",
-		      formula: "N_baselines = N_antennas * (N_antennas - 1) / 2",
-		      notebookRef: "cab: plot-antenna-layout"
-		    },
+  // ───────── SLIDES 1–5: interactive graphs (placeholders; you build these in Colab) ─────────
+  {
+    stage: "The Result", title: "24 Hours of the Radio Sky",
+    content: "We open with the answer: an all-sky image every 10 minutes. Drag the slider — the satellites move, the array stays still.",
+    formula: "◧ interactive 24-hour slider — dropping in later"
+  },
+  {
+    stage: "The Instrument", title: "24 Tiny Antennas",
+    content: "No giant dish. TART is 24 small GPS antennas on a flat plane — a telescope a university can build.",
+    formula: "◧ antenna layout graph — dropping in later"
+  },
+  {
+    stage: "The Trick", title: "Every Pair is a Ruler",
+    content: "Each pair of antennas (a baseline) measures one ripple of the sky. 24 antennas → 276 pairs, all at once.",
+    formula: "◧ baselines → uv-plane graph — dropping in later"
+  },
+  {
+    stage: "The Measurement", title: "One Baseline, One Fringe",
+    content: "Each baseline reports a complex number — a visibility: how strong that ripple is (amplitude) and where it sits (phase).",
+    formula: "◧ fringe + visibility-arrow graph — dropping in later"
+  },
+  {
+    stage: "The Payoff", title: "Add the Fringes → the Sky Appears",
+    content: "Sum all 552 fringes and the sources snap into focus at the field centre. That summation IS aperture synthesis.",
+    formula: "◧ fringe build-up slider — dropping in later"
+  },
 
-{
-  stage: "Pipeline · Stage 1 / 8",
-  title: "Acquire Raw Visibilities",
-  layout: "triptych",
-  concept: {
-    heading: "Why",
-    points: [
-      "The array records no image — only visibilities.",
-      "Each antenna pair → one complex number (amp + phase).",
-      "A visibility = correlation of two antennas' voltages.",
-      "Stage 1 just pulls these raw numbers off the telescope."
-    ]
+  // ───────── SLIDE 6: dependency install ─────────
+  {
+    stage: "Setup", title: "Install the Pipeline", layout: "triptych",
+    concept: { heading: "Why", points: [
+      "Stimela runs each step inside a container.",
+      "Reproducible on any WSL-2 machine.",
+      "Install it once, then just run recipes."
+    ]},
+    algorithm: { heading: "Requirements", code: `WSL 2
+Apptainer 1.4.4 (+ suid)
+squashfuse, fuse2fs, gocryptfs
+Python venv: tart_cargo, cult_cargo, stimela
+Recipe files: tart_dl.yaml, casacabs.yaml, casa/` },
+    recipe: { heading: "Install", code: `sudo apt install -y ./apptainer_1.4.4_amd64.deb
+sudo dpkg -i ./apptainer-suid_1.4.4_amd64.deb
+sudo apt install -y squashfuse fuse2fs gocryptfs
+python3 -m venv start && source start/bin/activate
+pip install tart_cargo cult_cargo stimela` }
   },
-  algorithm: {
-    heading: "Algorithm (Python)",
-    code: `# pull raw visibilities from the TART REST API
-assert GET {api}/mode/current == "vis"
-vis  = GET {api}/imaging/vis       # re + i·im, per baseline
-gain = GET {api}/calibration/gain  # published gains
-info = GET {api}/info              # lat, lon, alt, time
-save → rawdata/vis_<timestamp>.json`
+
+  // ───────── SLIDES 7+: one interferometry stage each ─────────
+  {
+    stage: "Stage 1 · Acquire", title: "Download Raw Visibilities", layout: "triptych",
+    concept: { heading: "What this does", points: [
+      "Interferometry starts from correlations, not images.",
+      "Each antenna pair → one complex visibility.",
+      "Pull a batch of snapshots off the telescope."
+    ]},
+    algorithm: { heading: "Algorithm", code: `make the working folders
+ask the TART API for N raw snapshots
+each snapshot = 276 baselines × complex vis` },
+    recipe: { heading: "Command", code: `mkdir stimela_images img rawdata caltables msdir
+stimela run tart_dl.yaml tart=bd-iub -s download-hdf` }
   },
-  recipe: {
-    heading: "Stimela recipe",
-    code: `download-hdf:
-  cab: tart-download-data
-  params:
-    api: =recipe.api      # .../tart/bd-iub
-    vis: true
-    n:   =recipe.raw_data_nfile   # 10 files
-    dir: =recipe.h5dir            # rawdata/`
+  {
+    stage: "Stage 2 · Build", title: "Create the Measurement Set", layout: "triptych",
+    concept: { heading: "What this does", points: [
+      "Raw JSON → the standard radio dataset (MS).",
+      "Compute each baseline's (u,v) geometry.",
+      "Predict the known-satellite sky model."
+    ]},
+    algorithm: { heading: "Algorithm", code: `baseline (u,v) = position_j − position_i
+fetch GNSS catalogue (known positions)
+predict their model visibilities
+rephase everything to the zenith` },
+    recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s create-ms` }
+  },
+  {
+    stage: "Stage 3 · Prep", title: "Label & Safeguard", layout: "triptych",
+    concept: { heading: "What this does", points: [
+      "Tag the data so standard tools accept it.",
+      "Save a restore-point before we alter anything.",
+      "Every later step stays reversible."
+    ]},
+    algorithm: { heading: "Algorithm", code: `rename observatory → CASA/WSClean accept it
+snapshot the current flags as 'ORIGINAL'` },
+    recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s updateobservatory
+stimela run tart_dl.yaml tart=bd-iub -s flagsave` }
+  },
+  {
+    stage: "Stage 4 · Inspect", title: "See What the Array Samples", layout: "triptych",
+    concept: { heading: "What this does", points: [
+      "The baselines ARE the Fourier sampling.",
+      "Plot the uv-coverage and antenna layout.",
+      "This sparse set of points is all we know."
+    ]},
+    algorithm: { heading: "Algorithm", code: `plot each baseline as a point in the uv-plane
+plot the 24 antenna positions
+print an observation summary` },
+    recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s plotuv
+stimela run tart_dl.yaml tart=bd-iub -s plotants
+stimela run tart_dl.yaml tart=bd-iub -s lister` }
+  },
+  {
+    stage: "Stage 5 · Calibrate", title: "Solve the Amplitudes", layout: "triptych",
+    concept: { heading: "What this does", points: [
+      "Each antenna has an unknown gain.",
+      "Match the data to the known-satellite model.",
+      "Normalise mean gain to 1 (no absolute flux)."
+    ]},
+    algorithm: { heading: "Algorithm", code: `find gain a_p so |a_p·a_q|·MODEL ≈ DATA
+average over the snapshot
+normalise mean |gain| → 1` },
+    recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s calibrate_amplitude
+stimela run tart_dl.yaml tart=bd-iub -s plotcaltable_amp` }
+  },
+  {
+    stage: "Stage 6 · Calibrate", title: "Solve the Phases", layout: "triptych",
+    concept: { heading: "What this does", points: [
+      "Each antenna's clock is off by an unknown phase.",
+      "That's why sources don't focus.",
+      "Solve the offsets so fringe crests line up."
+    ]},
+    algorithm: { heading: "Algorithm", code: `baseline phase = true phase + (clock_p − clock_q)
+solve each antenna's clock offset (every 10 s)
+subtract it` },
+    recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s calibrate_phase
+stimela run tart_dl.yaml tart=bd-iub -s plotcaltable_phase` }
+  },
+  {
+    stage: "Stage 7 · Apply", title: "Correct the Visibilities", layout: "triptych",
+    concept: { heading: "What this does", points: [
+      "Divide the solved gains out of every visibility.",
+      "Produces CORRECTED data, ready to image.",
+      "Dead antennas dropped — never ÷ by zero."
+    ]},
+    algorithm: { heading: "Algorithm", code: `CORRECTED = DATA / (gain_p · conj(gain_q))
+drop flagged / dead-antenna baselines` },
+    recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s applycal` }
+  },
+  {
+    stage: "Stage 8 · Image", title: "Fourier-Invert & CLEAN", layout: "triptych",
+    concept: { heading: "What this does", points: [
+      "Invert the calibrated visibilities → dirty image.",
+      "CLEAN peels off the beam's sidelobes.",
+      "Output: a FITS sky image (one per snapshot)."
+    ]},
+    algorithm: { heading: "Algorithm", code: `grid + inverse-FFT visibilities → dirty image + PSF
+CLEAN: subtract the beam from brightest peaks
+restore with a clean beam → final image → FITS` },
+    recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s snapshotimage` }
   }
-},
-
-{
-  stage: "Stage 2 / 8", title: "Build the Measurement Set", layout: "triptych",
-  concept: { heading: "Why", points: [
-    "Raw JSON → standard radio dataset (MS).",
-    "Antenna positions give each baseline (u,v).",
-    "Phase centre = zenith at snapshot time."
-  ]},
-  algorithm: { heading: "Algorithm", code: `for baseline (i,j):
-    uvw  = ant[j] − ant[i]     # metres
-    data = re + i·im
-U,V = uvw / wavelength         # w ≈ 0 (coplanar)` },
-  recipe: { heading: "Stimela recipe", code: `create-ms:
-  cab: tart2ms
-  params:
-    ms: msdir/bd-iub.ms
-    rephase: obs-midpoint` }
-},
-{
-  stage: "Stage 3 / 8", title: "Model the Sky (RIME)", layout: "triptych",
-  concept: { heading: "Why", points: [
-    "Known GPS satellites = our 'guide stars'.",
-    "Predict their visibilities as point sources.",
-    "MODEL vs DATA drives calibration."
-  ]},
-  algorithm: { heading: "Algorithm", code: `for sat s above horizon:
-    l,m = cos(el)·sin(az), cos(el)·cos(az)
-MODEL_ij = Σ_s exp(−2πi(u·l + v·m))` },
-  recipe: { heading: "Stimela recipe", code: `create-ms:
-  cab: tart2ms
-  params:
-    add-model: true
-    write-model-catalog: true` }
-},
-{
-  stage: "Stage 4 / 8", title: "Calibrate the Gains", layout: "triptych",
-  concept: { heading: "Why", points: [
-    "Antennas have unknown gain + phase errors.",
-    "Solve gₚ so DATA ≈ gₚ·conj(g_q)·MODEL.",
-    "Amplitude first, then phase (StefCal)."
-  ]},
-  algorithm: { heading: "Algorithm", code: `# StefCal (alternating least squares)
-repeat:
-    z   = conj(g_q)·MODEL
-    g_p = Σ(DATA·conj(z)) / Σ|z|²
-normalise: mean|g| → 1` },
-  recipe: { heading: "Stimela recipe", code: `calibrate_amplitude:
-  cab: casa.gaincal
-  params: {calmode: a, solnorm: true}
-calibrate_phase:
-  cab: casa.gaincal
-  params: {calmode: p, solint: 10s}` }
-},
-{
-  stage: "Stage 5 / 8", title: "Apply Calibration", layout: "triptych",
-  concept: { heading: "Why", points: [
-    "Correct every visibility with solved gains.",
-    "CORRECTED = DATA / (gₚ·conj(g_q)).",
-    "Dead antennas flagged — never ÷ by ~0."
-  ]},
-  algorithm: { heading: "Algorithm", code: `denom     = g[ant1]·conj(g[ant2])
-CORRECTED = DATA / denom     # skip flagged` },
-  recipe: { heading: "Stimela recipe", code: `applycal:
-  cab: casa.applycal
-  params:
-    gaintable: [tart.G0a, tart.G0p]
-    flagbackup: true` }
-},
-{
-  stage: "Stage 6 / 8", title: "Weight the Visibilities", layout: "triptych",
-  concept: { heading: "Why", points: [
-    "Sparse (u,v) sampling → weight each sample.",
-    "Briggs 'robust': resolution vs noise trade.",
-    "robust = 0 → balanced."
-  ]},
-  algorithm: { heading: "Algorithm", code: `grid (u,v) → density Wₖ per cell
-w = 1 / (1 + Wₖ · f2)
-# f2 set by robust parameter` },
-  recipe: { heading: "Stimela recipe", code: `snapshotimage:
-  cab: wsclean
-  params:
-    weight: briggs 0.0` }
-},
-{
-  stage: "Stage 7 / 8", title: "Make the Dirty Image", layout: "triptych",
-  concept: { heading: "Why", points: [
-    "Fourier-invert visibilities → sky image.",
-    "Coplanar array (w=0) → exact direct DFT.",
-    "PSF = image of all-ones (the beam)."
-  ]},
-  algorithm: { heading: "Algorithm", code: `I(l,m) = Σ_bl w·Re( V·exp(+2πi(u·l + v·m)) )
-PSF    = same, with V = 1` },
-  recipe: { heading: "Stimela recipe", code: `snapshotimage:
-  cab: wsclean
-  params: {size: 1024, scale: 600asec, pol: RR}` }
-},
-{
-  stage: "Stage 8 / 8", title: "Deconvolve + Restore", layout: "triptych",
-  concept: { heading: "Why", points: [
-    "Dirty image = true sky ⊛ PSF.",
-    "CLEAN peels off PSF sidelobes iteratively.",
-    "Restore with clean beam → export FITS."
-  ]},
-  algorithm: { heading: "Algorithm", code: `# Cotton-Schwab CLEAN
-minor: subtract gain·PSF at brightest peak
-major: re-image exact residual
-restored = model ⊛ beam + residual` },
-  recipe: { heading: "Stimela recipe", code: `snapshotimage:
-  cab: wsclean
-  params: {niter: 5000, mgain: 0.95, auto-mask: 5}` }
-},
-
-
-
-
 ];
+
+
+
+
+
+
+
 
 export default function App() {
 	  const currentUrl = typeof window !== 'undefined' ? window.location.href : 'https://stimela-talk.vercel.app';
