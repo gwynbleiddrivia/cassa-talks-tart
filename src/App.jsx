@@ -6,21 +6,13 @@ import FringeSlider from "./FringeSlider";
 
 const SLIDE_DATA = [
   // ───────── SLIDES 1–5: interactive graphs (placeholders; you build these in Colab) ─────────
-  {
-    stage: "The Result", title: "24 Hours of the Radio Sky",
-    content: "We open with the answer: an all-sky image every 10 minutes. Drag the slider — the satellites move, the array stays still.",
-    formula: "◧ interactive 24-hour slider — dropping in later"
-  },
-  {
-    stage: "The Instrument", title: "24 Tiny Antennas",
-    content: "No giant dish. TART is 24 small GPS antennas on a flat plane — a telescope a university can build.",
-    formula: "◧ antenna layout graph — dropping in later"
-  },
-  {
-    stage: "The Trick", title: "Every Pair is a Ruler",
-    content: "Each pair of antennas (a baseline) measures one ripple of the sky. 24 antennas → 276 pairs, all at once.",
-    formula: "◧ baselines → uv-plane graph — dropping in later"
-  },
+
+    { stage: "The Trick", title: "Two Antennas, Their Waves Interfere",
+    layout: "stack", images: ["/interference.png"] },
+
+    { stage: "The Trick", title: "One Baseline Makes One Fringe",
+    layout: "stack", images: ["/baseline.png"] },
+
    {
     stage: "The Trick", title: "One Baseline → One Fringe",
     content: "Two pairs, two fringes. Wider apart → dot further out → finer stripes.",
@@ -53,19 +45,7 @@ const SLIDE_DATA = [
   { stage: "The Payoff", title: "All Baselines — the Sky",          layout: "stack", images: ["/sumsteps/sumfull.png"] },
 
 
-
-
-  {
-    stage: "The Measurement", title: "One Baseline, One Fringe",
-    content: "Each baseline reports a complex number — a visibility: how strong that ripple is (amplitude) and where it sits (phase).",
-    formula: "◧ fringe + visibility-arrow graph — dropping in later"
-  },
-  {
-    stage: "The Payoff", title: "Add the Fringes → the Sky Appears",
-    content: "Sum all 552 fringes and the sources snap into focus at the field centre. That summation IS aperture synthesis.",
-    formula: "◧ fringe build-up slider — dropping in later"
-  },
-
+ 
   // ───────── SLIDE 6: dependency install ─────────
   {
     stage: "Setup", title: "Install the Pipeline", layout: "triptych",
@@ -92,7 +72,11 @@ pip install tart_cargo cult_cargo stimela` }
     concept: { heading: "What this does", points: [
       "Interferometry starts from correlations, not images.",
       "Each antenna pair → one complex visibility.",
-      "Pull a batch of snapshots off the telescope."
+      "Pull a batch of snapshots off the telescope.",
+      "https://api.elec.ac.nz/tart/bd-iub/api/v1/info",
+      "https://api.elec.ac.nz/tart/bd-iub/api/v1/mode/current",
+      "https://api.elec.ac.nz/tart/bd-iub/api/v1/calibration/gain",
+      "https://api.elec.ac.nz/tart/bd-iub/api/v1/imaging/vis",
     ]},
     algorithm: { heading: "Algorithm", code: `make the working folders
 ask the TART API for N raw snapshots
@@ -113,6 +97,8 @@ predict their model visibilities
 rephase everything to the zenith` },
     recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s create-ms` }
   },
+    { stage: "Stage 2 · Build", title: "The Measurement Set", layout: "stack", images: ["/ms.png"] },
+
   {
     stage: "Stage 3 · Prep", title: "Label & Safeguard", layout: "triptych",
     concept: { heading: "What this does", points: [
@@ -152,6 +138,8 @@ normalise mean |gain| → 1` },
     recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s calibrate_amplitude
 stimela run tart_dl.yaml tart=bd-iub -s plotcaltable_amp` }
   },
+    { stage: "Stage 5 · Calibrate", title: "The Amplitude Gains", layout: "stack", images: ["/gain.png"] },
+
   {
     stage: "Stage 6 · Calibrate", title: "Solve the Phases", layout: "triptych",
     concept: { heading: "What this does", points: [
@@ -165,6 +153,8 @@ subtract it` },
     recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s calibrate_phase
 stimela run tart_dl.yaml tart=bd-iub -s plotcaltable_phase` }
   },
+    { stage: "Stage 6 · Calibrate", title: "The Phase Solutions", layout: "stack", images: ["/phase.png"] },
+
   {
     stage: "Stage 7 · Apply", title: "Correct the Visibilities", layout: "triptych",
     concept: { heading: "What this does", points: [
@@ -176,18 +166,29 @@ stimela run tart_dl.yaml tart=bd-iub -s plotcaltable_phase` }
 drop flagged / dead-antenna baselines` },
     recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s applycal` }
   },
+    { stage: "Stage 7 · Apply", title: "The CORRECTED Column", layout: "stack", images: ["/ms_cal.png"] },
+
   {
     stage: "Stage 8 · Image", title: "Fourier-Invert & CLEAN", layout: "triptych",
-    concept: { heading: "What this does", points: [
-      "Invert the calibrated visibilities → dirty image.",
-      "CLEAN peels off the beam's sidelobes.",
-      "Output: a FITS sky image (one per snapshot)."
+       concept: { heading: "What this does", points: [
+      "Fourier-sum the visibilities → the 'dirty' image: the true sky smeared by the array's messy beam.",
+      "Gaps in the uv-map make every source drag a splatter of rings and spikes (sidelobes).",
+      "CLEAN finds the brightest spot, records it as a point source, and subtracts that spot's known splatter — over and over.",
+      "Finally it repaints the recorded sources with one smooth, clean beam → the final image."
     ]},
-    algorithm: { heading: "Algorithm", code: `grid + inverse-FFT visibilities → dirty image + PSF
-CLEAN: subtract the beam from brightest peaks
-restore with a clean beam → final image → FITS` },
+    algorithm: { heading: "How CLEAN works", code: `dirty image = true sky ✳ dirty beam (PSF)
+loop:
+  find the brightest pixel
+  add a fraction of it to the model
+  subtract that fraction × shifted PSF
+until only noise remains
+restore: model ✳ clean beam + leftover noise` },
+
     recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s snapshotimage` }
-  }
+  },
+    { stage: "Stage 8 · Image", title: "Dirty → CLEAN", layout: "stack", images: ["/clean.png"] },
+  { stage: "Stage 8 · Image", title: "The Final Sky", layout: "stack", images: ["/final.png"] }
+
 ];
 
 
