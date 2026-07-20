@@ -271,11 +271,6 @@ export default function App() {
       ))}
     </div>
 
-
-      {(slide.instances ?? [{ size: 240 }]).map((it, k) => (
-        <BaselineExplorer key={k} sep={it.sep} ang={it.ang} size={it.size ?? 150} />
-      ))}
-    </div>
   </div>
 ) : slide.layout === "triptych" ? (
   <div className="triptych">
