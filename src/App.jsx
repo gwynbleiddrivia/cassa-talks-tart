@@ -2,6 +2,7 @@ import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import './App.css';
 import BaselineExplorer from "./BaselineExplorer";
+import FringeSlider from "./FringeSlider";
 
 const SLIDE_DATA = [
   // ───────── SLIDES 1–5: interactive graphs (placeholders; you build these in Colab) ─────────
@@ -43,6 +44,8 @@ const SLIDE_DATA = [
   { stage: "The Map", title: "The Complete uv-Map — and the To-Do List",
     layout: "stack", images: ["/uv4.png"] },
 
+  { stage: "The Payoff", title: "Add the Fringes → the Sky Appears",
+    layout: "stack", images: [], after: "slider" },
 
 
 
@@ -259,6 +262,7 @@ export default function App() {
     <p className="stage-label">{slide.stage}</p>
     <h1>{slide.title}</h1>
     <div className="img-stack">
+      {slide.after === "slider" && <FringeSlider />}
       {slide.images.map((src, k) => <img key={k} src={src} alt="" />)}
     </div>
   </div>
