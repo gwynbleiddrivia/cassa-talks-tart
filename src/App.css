@@ -169,3 +169,23 @@
 }
 .img-stack { display: flex; flex-direction: column; gap: 12px; align-items: center; width: 100%; }
 .img-stack img { max-width: 100%; height: auto; border-radius: 6px; }
+.dl-btn {
+  display: inline-block; margin-top: 1.5rem; padding: 0.9rem 1.6rem;
+  background: #000; color: #fff; text-decoration: none; border-radius: 8px;
+  font-weight: 600; font-size: clamp(1rem, 1.6vw, 1.25rem);
+}
+.dl-btn:hover { background: #1f6feb; }
+@media print {
+  @page { size: landscape; margin: 0; }
+  html, body { background: #fff; }
+  .deck-viewport {
+    position: static; overflow: visible; height: auto;
+    display: block; scroll-snap-type: none;
+  }
+  .slide-page {
+    flex: none; width: 100vw; height: 100vh;
+    page-break-after: always; break-after: page;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;   /* keep borders & dark boxes */
+  }
+  .slide-page:last-child { page-break-after: auto; }
+}

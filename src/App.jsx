@@ -191,7 +191,11 @@ restore: model ✳ clean beam + leftover noise` },
     recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s snapshotimage` }
   },
     { stage: "Stage 8 · Image", title: "Dirty → CLEAN", layout: "stack", images: ["/clean.png"] },
-  { stage: "Stage 8 · Image", title: "The Final Sky", layout: "stack", images: ["/final.png"] }
+  { stage: "Stage 8 · Image", title: "The Final Sky", layout: "stack", images: ["/final.png"] },
+    { stage: "Thanks", title: "Under One Sky",
+    content: "Take the whole deck with you — and scan any slide to play with it live.",
+    layout: "download", file: "/tart-talk.pdf" },
+
 
 ];
 
@@ -267,7 +271,15 @@ export default function App() {
 
  */})
 
-{slide.layout === "stack" ? (
+{slide.layout === "download" ? (
+  <div className="slide-content">
+    <p className="stage-label">{slide.stage}</p>
+    <h1>{slide.title}</h1>
+    <p className="description">{slide.content}</p>
+    <a href={slide.file} download className="dl-btn">⬇ Download the slides (PDF)</a>
+  </div>
+) : slide.layout === "stack" ? (
+
   <div className="slide-content">
     <p className="stage-label">{slide.stage}</p>
     <h1>{slide.title}</h1>
