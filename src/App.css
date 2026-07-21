@@ -188,4 +188,9 @@
     -webkit-print-color-adjust: exact; print-color-adjust: exact;   /* keep borders & dark boxes */
   }
   .slide-page:last-child { page-break-after: auto; }
+  @media print {
+  .slide-content { max-height: 100vh; overflow: hidden; }   /* don't spill to next page */
+  .img-stack img { max-height: 78vh; width: auto; max-width: 100%; }  /* leave room for the title */
+}
+
 }
