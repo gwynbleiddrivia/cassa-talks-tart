@@ -189,7 +189,7 @@
   }
   .slide-page:last-child { page-break-after: auto; }
   .slide-content { max-height: 100vh; overflow: hidden; }   /* don't spill to next page */
-  .img-stack img { max-height: 78vh; width: auto; max-width: 100%; }  /* leave room for the title */
+  .img-stack img { max-height: 60vh; width: auto; max-width: 100%; }
 
 
 }
