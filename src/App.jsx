@@ -125,6 +125,10 @@ print an observation summary` },
 stimela run tart_dl.yaml tart=bd-iub -s plotants
 stimela run tart_dl.yaml tart=bd-iub -s lister` }
   },
+    { stage: "Stage 5 · Calibrate", title: "How Does It Know? — the Known Satellites",
+    content: "GPS satellite positions are published to the metre — from orbit data that has nothing to do with our measurement. So we can predict what every baseline SHOULD read: the model. Calibration then finds each antenna's gain and clock offset that makes the real data best match that prediction — like checking a scale against a known 1-kg weight. It corrects the instrument, never the sky.",
+    formula: "find gains g so that   g_i · conj(g_j) · MODEL ≈ DATA   (all 24 antennas at once)" },
+
   {
     stage: "Stage 5 · Calibrate", title: "Solve the Amplitudes", layout: "triptych",
     concept: { heading: "What this does", points: [

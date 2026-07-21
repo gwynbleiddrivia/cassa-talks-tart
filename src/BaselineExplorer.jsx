@@ -10,7 +10,8 @@ export default function BaselineExplorer({ sep: sep0 = 0.6, ang: ang0 = 30, size
   const canvasRef = useRef(null);
 
   const S = size, C = S / 2;
-  const GROUND_SCALE = (C - 16) / MAX_SEP;               // 1.5 m fits the panel
+  const GROUND_SCALE = (2 * (C - 16)) / MAX_SEP;        // baseline spans the whole panel
+
   const UV_SCALE = (C - 16) / (MAX_SEP / LAMBDA);        // longest baseline fits
 
   const th = (ang * Math.PI) / 180;
@@ -19,8 +20,11 @@ export default function BaselineExplorer({ sep: sep0 = 0.6, ang: ang0 = 30, size
   const v = lenWl * Math.sin(th);
 
   // ground panel: antenna A at centre, B offset by the separation
-  const bx = C + sep * GROUND_SCALE * Math.cos(th);
-  const by = C - sep * GROUND_SCALE * Math.sin(th);
+  const dx = sep * GROUND_SCALE * Math.cos(th);
+  const dy = sep * GROUND_SCALE * Math.sin(th);
+  const ax = C - dx / 2, ay = C + dy / 2;   // antenna A
+  const bx = C + dx / 2, by = C - dy / 2;   // antenna B
+
   // uv panel: the single dot
   const ux = C + u * UV_SCALE;
   const uy = C - v * UV_SCALE;
@@ -60,9 +64,10 @@ export default function BaselineExplorer({ sep: sep0 = 0.6, ang: ang0 = 30, size
         <div style={panel}>
           <div style={label}>① the two antennas</div>
           <svg width={S} height={S} style={{ background: "#fafafa", borderRadius: 8 }}>
-            <line x1={C} y1={C} x2={bx} y2={by} stroke="#333" strokeWidth="3" />
-            <circle cx={C} cy={C} r="7" fill={BLUE} />
+            <line x1={ax} y1={ay} x2={bx} y2={by} stroke="#333" strokeWidth="3" />
+            <circle cx={ax} cy={ay} r="7" fill={BLUE} />
             <circle cx={bx} cy={by} r="7" fill={BLUE} />
+
           </svg>
           <div style={{ fontSize: 13, color: "#555", marginTop: 4 }}>
             {sep.toFixed(2)} m apart
