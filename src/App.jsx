@@ -194,7 +194,7 @@ restore: model ✳ clean beam + leftover noise` },
   { stage: "Stage 8 · Image", title: "The Final Sky", layout: "stack", images: ["/final.png"] },
     { stage: "Thanks", title: "Under One Sky",
     content: "Take the whole deck with you — and scan any slide to play with it live.",
-    layout: "download", file: "/tart-talk.pdf" },
+    layout: "download", file: "/final_pdf.pdf" },
 
 
 ];
