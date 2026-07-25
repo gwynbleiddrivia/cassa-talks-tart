@@ -214,50 +214,6 @@ export default function App() {
 						                  <span className="qr-label">SCAN TO FOLLOW</span>
 						                </div>
 						              </header>
-({/** 
- * 
- * 
-						              <div className="slide-content">
-						                <p className="stage-label">{slide.stage}</p>
-						                <h1>{slide.title}</h1>
-						                <p className="description">{slide.content}</p>
-						                <div className="math-box">
-						                  <code>{slide.formula}</code>
-						                </div>
-						                <p className="ref-text">Stimela Step: {slide.notebookRef}</p>
-						              </div>
-
-*/})
-({/**
- * 
-{slide.layout === "triptych" ? (
-  <div className="triptych">
-    <div className="block concept">
-      <p className="stage-label">{slide.stage}</p>
-      <h1>{slide.title}</h1>
-      <h2>{slide.concept.heading}</h2>
-      <ul>{slide.concept.points.map((p, k) => <li key={k}>{p}</li>)}</ul>
-    </div>
-    <div className="block algorithm">
-      <h2>{slide.algorithm.heading}</h2>
-      <pre>{slide.algorithm.code}</pre>
-    </div>
-    <div className="block recipe">
-      <h2>{slide.recipe.heading}</h2>
-      <pre>{slide.recipe.code}</pre>
-    </div>
-  </div>
-) : (
-  <div className="slide-content">
-    <p className="stage-label">{slide.stage}</p>
-    <h1>{slide.title}</h1>
-    <p className="description">{slide.content}</p>
-    <div className="math-box"><code>{slide.formula}</code></div>
-    <p className="ref-text">Stimela Step: {slide.notebookRef}</p>
-  </div>
-)}
-
- */})
 
 {slide.layout === "download" ? (
   <div className="slide-content">
@@ -289,9 +245,11 @@ export default function App() {
     <h1>{slide.title}</h1>
     <p className="description">{slide.content}</p>
     <div className="pair-row">
-      {(slide.instances ?? [{ size: 240 }]).map((it, k) => (
-        <BaselineExplorer key={k} sep={it.sep} ang={it.ang} size={it.size ?? 150} />
+      {(slide.instances ?? [{}]).map((it, k, arr) => (
+        <BaselineExplorer key={k} sep={it.sep} ang={it.ang}
+          size={it.size ?? (arr.length === 1 ? 300 : 150)} />
       ))}
+
     </div>
 
   </div>
