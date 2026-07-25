@@ -7,18 +7,6 @@ import FringeSlider from "./FringeSlider";
 const SLIDE_DATA = [
   // ───────── SLIDES 1–5: interactive graphs (placeholders; you build these in Colab) ─────────
 
-    { stage: "The Trick", title: "Two Antennas, Their Waves Interfere",
-    layout: "stack", images: ["/interference.png"] },
-
-    { stage: "The Trick", title: "One Baseline Makes One Fringe",
-    layout: "stack", images: ["/baseline.png"] },
-
-   {
-    stage: "The Trick", title: "One Baseline → One Fringe",
-    content: "Two pairs, two fringes. Wider apart → dot further out → finer stripes.",
-    layout: "interactive",
-    instances: [ { sep: 0.30, ang: 40 }, { sep: 0.72, ang: 60 } ]
-  },
   {
     stage: "The Trick", title: "Longer Baselines, Finer Fringes",
     content: "Keep going — the longer the pair, the finer and more tilted the fringe.",
