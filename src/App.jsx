@@ -11,7 +11,7 @@ const SLIDE_DATA = [
     stage: "The Trick", title: "How Fringe Changes",
     content: "the longer the distance of the antenna pair, the finer and more tilted the fringe.",
     layout: "interactive",
-    instances: [ { sep: 0.87, ang: 109 }, { sep: 1.20, ang: 163 } ]
+    instances: [ { sep: 1.20, ang: 163 } ]
   },
 
 
@@ -261,7 +261,9 @@ export default function App() {
 
 {slide.layout === "download" ? (
   <div className="slide-content">
-    <p className="stage-label">{slide.stage}</p>
+    {
+    //<p className="stage-label">{slide.stage}</p>
+            }
     <h1>{slide.title}</h1>
     <p className="description">{slide.content}</p>
     <a href={slide.file} download className="dl-btn">⬇ Download the slides (PDF)</a>
@@ -269,7 +271,9 @@ export default function App() {
 ) : slide.layout === "stack" ? (
 
   <div className="slide-content">
-    <p className="stage-label">{slide.stage}</p>
+    {
+    //<p className="stage-label">{slide.stage}</p>
+            }
     <h1>{slide.title}</h1>
     <div className="img-stack">
       {slide.after === "slider" && <FringeSlider />}
@@ -279,7 +283,9 @@ export default function App() {
 ) : slide.layout === "interactive" ? (
 
   <div className="slide-content">
-    <p className="stage-label">{slide.stage}</p>
+    {
+    //<p className="stage-label">{slide.stage}</p>
+            }
     <h1>{slide.title}</h1>
     <p className="description">{slide.content}</p>
     <div className="pair-row">
