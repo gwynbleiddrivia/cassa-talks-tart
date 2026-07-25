@@ -1,0 +1,4 @@
+Intro 1
+Content - How Fringe Changes
+If you scanned this qr code or are already in the website on your phone, you can play with this interactive graph. Here we can see how fringe changes, with the distance of the two antennae and with the orientation of their connecting line. If the distance is small, the stripes get bolder, if the distance is long, the stripes get finer. And about the orientation, the fringe is always perpendicular to the connecting line. ALways at a right angle to the antenna pair.
+Content - 

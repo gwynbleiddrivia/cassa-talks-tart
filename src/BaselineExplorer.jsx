@@ -107,7 +107,7 @@ export default function BaselineExplorer({ sep: sep0 = 0.6, ang: ang0 = 30, size
       {/* controls */}
       <div style={{ maxWidth: 460, margin: "22px auto 0" }}>
         <label style={{ display: "block", fontSize: 14, marginBottom: 10 }}>
-          Separation: <b>{sep.toFixed(2)} m</b>
+          Distance: <b>{sep.toFixed(2)} m</b>
           <input type="range" min="0.1" max="1.5" step="0.01" value={sep}
                  onChange={(e) => setSep(+e.target.value)} style={{ width: "100%" }} />
         </label>

@@ -8,8 +8,8 @@ const SLIDE_DATA = [
   // ───────── SLIDES 1–5: interactive graphs (placeholders; you build these in Colab) ─────────
 
   {
-    stage: "The Trick", title: "Longer Baselines, Finer Fringes",
-    content: "Keep going — the longer the pair, the finer and more tilted the fringe.",
+    stage: "The Trick", title: "How Fringe Changes",
+    content: "the longer the distance of the antenna pair, the finer and more tilted the fringe.",
     layout: "interactive",
     instances: [ { sep: 0.87, ang: 109 }, { sep: 1.20, ang: 163 } ]
   },
