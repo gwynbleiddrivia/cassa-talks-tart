@@ -26,14 +26,8 @@ const SLIDE_DATA = [
 
   { stage: "The Payoff", title: "Add the Fringes → the Sky Appears",
     layout: "stack", images: [], after: "slider" },
-  { stage: "The Payoff", title: "1 Baseline — Just Stripes",        layout: "stack", images: ["/sumsteps/sum1.png"] },
-  { stage: "The Payoff", title: "2 Baselines — a Lattice Appears",  layout: "stack", images: ["/sumsteps/sum2.png"] },
-  { stage: "The Payoff", title: "30 Baselines — the Centre Wins",   layout: "stack", images: ["/sumsteps/sum30.png"] },
-  { stage: "The Payoff", title: "150 Baselines — Sidelobes Fade",   layout: "stack", images: ["/sumsteps/sum150.png"] },
-  { stage: "The Payoff", title: "All Baselines — the Sky",          layout: "stack", images: ["/sumsteps/sumfull.png"] },
+  
 
-
- 
   // ───────── SLIDE 6: dependency install ─────────
   {
     stage: "Setup", title: "Install the Pipeline", layout: "triptych",
@@ -245,10 +239,10 @@ export default function App() {
     <h1>{slide.title}</h1>
     <p className="description">{slide.content}</p>
     <div className="pair-row">
-      {(slide.instances ?? [{}]).map((it, k, arr) => (
-        <BaselineExplorer key={k} sep={it.sep} ang={it.ang}
-          size={it.size ?? (arr.length === 1 ? 300 : 150)} />
+      {(slide.instances ?? [{ size: 240 }]).map((it, k) => (
+        <BaselineExplorer key={k} sep={it.sep} ang={it.ang} size={it.size ?? 150} />
       ))}
+
 
     </div>
 
