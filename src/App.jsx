@@ -6,6 +6,32 @@ import FringeSlider from "./FringeSlider";
 
 const SLIDE_DATA = [
   // ───────── SLIDES 1–5: interactive graphs (placeholders; you build these in Colab) ─────────
+  {
+    layout: "cover",
+    theme: "Space Science & Astronomy for Outreach & Education",
+    title: "Visualizing the Transient Sky: Real-Time All-Sky Imaging and Open Data in the TART Ecosystem",
+    authors: [
+      { name: "T Molteno" }, { name: "B Hugo" }, { name: "S Mirza" },
+      { name: "MYA Khondoker", bold: true }, { name: "SR Diya" }, { name: "SH Abrar" },
+      { name: "SH Muzaffar" }, { name: "MFH Sami" }, { name: "T Rahman" },
+      { name: "MH Masum" }, { name: "KMB Asad" }
+    ],
+    meta: "PSSARC 2026 · Cebu, Philippines · CASSA / Independent University, Bangladesh"
+  },
+  { layout: "stack", title: "The TART Telescope", images: ["/tartpic.jpg"] },
+
+  { layout: "gallery", title: "CASSA Workshop 2 · Building & Learning TART",
+    photos: [
+      { src: "/conf1.jpg", caption: "Students at the TART array" },
+      { src: "/conf2.jpg", caption: "Prof. Tim Molteno lecturing" },
+      { src: "/conf3.jpg", caption: "Working on TART's electronics" }
+    ] },
+
+  { layout: "overview", title: "One Principle — Hands-On",
+    lead: "The same idea behind the VLA and even JWST: link many small antennas so they act as one giant telescope. The waves they catch reinforce or cancel with the sky, and many baselines — antenna pairs at different distances and angles — build a sharp image. TART makes it hands-on: real sky, open data, hardware a university can build — a classroom for interferometry.",
+    chips: ["24 antennas", "GPS L1 · 1.575 GHz", "λ = 0.19 m"],
+    roadmap: ["Antennas", "Baselines", "uv-plane", "Calibration", "Fringes → Sky", "Open-data pipeline"] },
+
 
   {
     stage: "The Trick", title: "How Fringe Changes",
@@ -209,7 +235,38 @@ export default function App() {
 						                </div>
 						              </header>
 
-{slide.layout === "download" ? (
+
+{slide.layout === "gallery" ? (
+  <div className="slide-content">
+    {slide.title && <h1>{slide.title}</h1>}
+    <div className="gallery">
+      {slide.photos.map((p, i) => (
+        <figure key={i}><img src={p.src} alt="" />
+          {p.caption && <figcaption>{p.caption}</figcaption>}</figure>
+      ))}
+    </div>
+  </div>
+) : slide.layout === "overview" ? (
+  <div className="slide-content">
+    <h1>{slide.title}</h1>
+    <p className="overview-lead">{slide.lead}</p>
+    <div className="chips">{slide.chips.map((c, i) => <span key={i} className="chip">{c}</span>)}</div>
+    <div className="roadmap">{slide.roadmap.map((r, i) => <span key={i} className="pill">{r}</span>)}</div>
+  </div>
+) : slide.layout === "cover" ? (
+  <div className="cover">
+    <p className="cover-theme">{slide.theme}</p>
+    <h1 className="cover-title">{slide.title}</h1>
+    <p className="cover-authors">
+      {slide.authors.map((au, i) => (
+        <span key={i}>{au.bold ? <strong>{au.name}</strong> : au.name}
+          {i < slide.authors.length - 1 ? ", " : ""}</span>
+      ))}
+    </p>
+    <p className="cover-meta">{slide.meta}</p>
+  </div>
+) : slide.layout === "download" ? (
+
   <div className="slide-content">
     {
     //<p className="stage-label">{slide.stage}</p>

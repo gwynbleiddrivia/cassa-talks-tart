@@ -193,3 +193,29 @@
 
 
 }
+
+.cover { display: flex; flex-direction: column; justify-content: center; align-items: center;
+         height: 100%; text-align: center; gap: 1.3rem; padding: 0 1.5rem; }
+.cover-theme { font-family: monospace; text-transform: uppercase; letter-spacing: 2px;
+               color: #1f6feb; font-size: clamp(0.8rem, 1.4vw, 1.1rem); }
+.cover-title { font-size: clamp(1.8rem, 4.6vw, 3.6rem); line-height: 1.12; color: #000;
+               max-width: 24ch; margin: 0 auto; }
+.cover-authors { font-size: clamp(0.95rem, 1.6vw, 1.25rem); color: #333; line-height: 1.7;
+                 max-width: 62ch; margin: 0 auto; }
+.cover-authors strong { color: #1f6feb; }         /* you — MYA Khondoker — highlighted */
+.cover-meta { font-family: monospace; font-size: clamp(0.8rem, 1.2vw, 1rem); color: #666; }
+
+.gallery { display: flex; gap: 16px; justify-content: center; align-items: flex-start; flex-wrap: wrap; }
+.gallery figure { margin: 0; flex: 1 1 30%; max-width: 32%; }
+.gallery img { width: 100%; height: auto; border-radius: 8px; }
+.gallery figcaption { font-size: 0.85rem; color: #555; margin-top: 6px; text-align: center; }
+@media (max-width: 600px) { .gallery figure { flex: 1 1 100%; max-width: 100%; } }
+
+.overview-lead { font-size: clamp(1.05rem, 1.7vw, 1.45rem); line-height: 1.55; color: #222;
+                 max-width: 62ch; margin: 0 auto 1.6rem; }
+.chips { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 1.4rem; }
+.chip { background: #1f6feb; color: #fff; padding: 0.5rem 1rem; border-radius: 999px;
+        font-weight: 600; font-size: clamp(0.9rem, 1.4vw, 1.15rem); }
+.roadmap { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.pill { background: #f0f0f3; color: #333; padding: 0.4rem 0.9rem; border-radius: 8px;
+        font-family: monospace; font-size: clamp(0.8rem, 1.2vw, 1rem); }
