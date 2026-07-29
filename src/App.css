@@ -256,3 +256,19 @@
   .agenda-cols { grid-template-columns: 1fr; gap: 20px; }
   .agenda-lead { text-align: left; }
 }
+/* --- IMG + INTERACTIVE: picture left, explorer right --- */
+.slide-content.img-interactive { max-width: 100%; width: 100%; }
+.slide-content.img-interactive h1 { font-size: clamp(1.35rem, 2.4vw, 2.1rem);
+                                    margin-bottom: 0.45rem; }
+.slide-content.img-interactive .description { font-size: clamp(0.9rem, 1.25vw, 1.1rem);
+                                              max-width: 95ch; margin-bottom: 1rem; }
+.ii-row { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 28px; align-items: start; }
+.ii-left { margin: 0; }
+.ii-left img { width: 100%; height: auto; border-radius: 8px; }
+.ii-left figcaption { font-size: clamp(0.78rem, 1vw, 0.95rem); color: #555;
+                      line-height: 1.45; margin-top: 8px; }
+.ii-right { min-width: 0; }
+
+@media (max-width: 900px) {
+  .ii-row { grid-template-columns: 1fr; gap: 20px; }
+}

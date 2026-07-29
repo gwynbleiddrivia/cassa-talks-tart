@@ -63,10 +63,13 @@ const SLIDE_DATA = [
 
 
   {
-    stage: "The Trick", title: "How Fringe Changes",
-    content: "the longer the distance of the antenna pair, the finer and more tilted the fringe.",
-    layout: "interactive",
-    instances: [ { sep: 1.20, ang: 163 } ]
+    stage: "The Trick",
+    title: "What a Fringe Is — and How It Changes with Distance and Angle",
+    content: "A pair of antennas never sees a picture. It sees one striped pattern laid across the whole sky. Move the pair further apart and the stripes get finer; turn the pair and the stripes turn with it — always at a right angle to the line joining the two antennas.",
+    layout: "img-interactive",
+    image: "/fringe.jpg",
+    caption: "Wavefronts arriving at two antennas: where they add, a bright band; where they cancel, a dark one. Close pair → bold bands. Far pair → fine bands.",
+    sep: 1.20, ang: 163, size: 160
   },
 
 
@@ -325,23 +328,21 @@ export default function App() {
       {slide.images.map((src, k) => <img key={k} src={src} alt="" />)}
     </div>
   </div>
-) : slide.layout === "interactive" ? (
-
-  <div className="slide-content">
-    {
-    //<p className="stage-label">{slide.stage}</p>
-            }
+) : slide.layout === "img-interactive" ? (
+  <div className="slide-content img-interactive">
     <h1>{slide.title}</h1>
     <p className="description">{slide.content}</p>
-    <div className="pair-row">
-      {(slide.instances ?? [{ size: 240 }]).map((it, k) => (
-        <BaselineExplorer key={k} sep={it.sep} ang={it.ang} size={it.size ?? 150} />
-      ))}
-
-
+    <div className="ii-row">
+      <figure className="ii-left">
+        <img src={slide.image} alt="" />
+        {slide.caption && <figcaption>{slide.caption}</figcaption>}
+      </figure>
+      <div className="ii-right">
+        <BaselineExplorer sep={slide.sep} ang={slide.ang} size={slide.size ?? 160} />
+      </div>
     </div>
-
   </div>
+
 ) : slide.layout === "triptych" ? (
   <div className="triptych">
     <div className="block concept">
