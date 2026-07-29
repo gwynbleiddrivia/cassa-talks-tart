@@ -143,7 +143,6 @@ predict their model visibilities
 rephase everything to the zenith` },
     recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s create-ms` }
   },
-    { stage: "Stage 2 · Build", title: "The Measurement Set", layout: "stack", images: ["/ms.png"] },
 
   {
     stage: "Stage 3 · Prep", title: "Label & Safeguard", layout: "triptych",
@@ -171,9 +170,7 @@ print an observation summary` },
 stimela run tart_dl.yaml tart=bd-iub -s plotants
 stimela run tart_dl.yaml tart=bd-iub -s lister` }
   },
-    { stage: "Stage 5 · Calibrate", title: "How Does It Know? — the Known Satellites",
-    content: "GPS satellite positions are published to the metre — from orbit data that has nothing to do with our measurement. So we can predict what every baseline SHOULD read: the model. Calibration then finds each antenna's gain and clock offset that makes the real data best match that prediction — like checking a scale against a known 1-kg weight. It corrects the instrument, never the sky.",
-    formula: "find gains g so that   g_i · conj(g_j) · MODEL ≈ DATA   (all 24 antennas at once)" },
+
 
   {
     stage: "Stage 5 · Calibrate", title: "Solve the Amplitudes", layout: "triptych",
@@ -188,7 +185,7 @@ normalise mean |gain| → 1` },
     recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s calibrate_amplitude
 stimela run tart_dl.yaml tart=bd-iub -s plotcaltable_amp` }
   },
-    { stage: "Stage 5 · Calibrate", title: "The Amplitude Gains", layout: "stack", images: ["/gain.png"] },
+ 
 
   {
     stage: "Stage 6 · Calibrate", title: "Solve the Phases", layout: "triptych",
@@ -203,7 +200,6 @@ subtract it` },
     recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s calibrate_phase
 stimela run tart_dl.yaml tart=bd-iub -s plotcaltable_phase` }
   },
-    { stage: "Stage 6 · Calibrate", title: "The Phase Solutions", layout: "stack", images: ["/phase.png"] },
 
   {
     stage: "Stage 7 · Apply", title: "Correct the Visibilities", layout: "triptych",
@@ -212,11 +208,10 @@ stimela run tart_dl.yaml tart=bd-iub -s plotcaltable_phase` }
       "Produces CORRECTED data, ready to image.",
       "Dead antennas dropped — never ÷ by zero."
     ]},
-    algorithm: { heading: "Algorithm", code: `CORRECTED = DATA / (gain_p · conj(gain_q))
+    algorithm: { heading: "Algorithm", code: `CORRECTED = DATA / (gain_p · conj(gain_q)
 drop flagged / dead-antenna baselines` },
     recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s applycal` }
   },
-    { stage: "Stage 7 · Apply", title: "The CORRECTED Column", layout: "stack", images: ["/ms_cal.png"] },
 
   {
     stage: "Stage 8 · Image", title: "Fourier-Invert & CLEAN", layout: "triptych",
@@ -236,7 +231,7 @@ restore: model ✳ clean beam + leftover noise` },
 
     recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s snapshotimage` }
   },
-    { stage: "Stage 8 · Image", title: "Dirty → CLEAN", layout: "stack", images: ["/clean.png"] },
+  
   { stage: "Stage 8 · Image", title: "The Final Sky", layout: "stack", images: ["/final.png"] },
     { stage: "Thanks", title: "Under One Sky",
     content: "Take the whole deck with you — and scan any slide to play with it live.",
