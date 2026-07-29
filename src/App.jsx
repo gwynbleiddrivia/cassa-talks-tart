@@ -264,7 +264,11 @@ export default function App() {
 						                <span className="slide-num">{formattedNumber}</span>
 						                <div className="qr-container">
 						                  <QRCodeSVG value={currentUrl} size={70} level={"L"} />
-                                                            <span className="qr-label">SCAN THIS QR<br/>OR VISIT https://cassa-talks-tart-flame.vercel.app/ TO PLAY WITH THIS SLIDE</span>
+                                                                                                                <span className="qr-label">
+                                <span className="qr-cta">SCAN TO PLAY WITH THIS SLIDE</span>
+                                <span className="qr-or">— or visit —</span>
+                                <span className="qr-url">cassa-talks-tart-flame.vercel.app</span>
+                              </span>
 
 						                </div>
 						              </header>
