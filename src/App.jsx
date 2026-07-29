@@ -106,9 +106,7 @@ sudo dpkg -i ./apptainer-suid_1.4.4_amd64.deb
 sudo apt install -y squashfuse fuse2fs gocryptfs
 python3 -m venv start && source start/bin/activate
 pip install tart_cargo cult_cargo stimela
-cp /mnt/d/tart/tart_dl.yaml .
-cp /mnt/d/tart/casacabs.yaml .
-cp /mnt/d/tart/make_mov.py .
+cp /mnt/d/tart/{tart_dl.yaml,casacabs.yaml,make_mov.py} .
 cp -r /mnt/d/tart/casa/ ./casa/` }
   },
 

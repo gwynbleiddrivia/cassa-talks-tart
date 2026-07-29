@@ -278,3 +278,30 @@
 @media (max-width: 900px) {
   .ii-row { grid-template-columns: 1fr; gap: 20px; }
 }
+/* ============================================================
+   PRINT OVERRIDES — MUST STAY LAST IN THIS FILE.
+   Portrait paper is only ~794 CSS px wide, so the max-width
+   mobile queries above fire while printing; being last is what
+   lets these win without !important.
+   ============================================================ */
+@media print {
+  /* nothing may expand past its page */
+  .slide-page { overflow: hidden; break-inside: avoid; page-break-inside: avoid; }
+  .minimalist-frame { overflow: hidden; }
+
+  /* SLIDE 5 (img-interactive): hold the two columns, cap the picture */
+  .ii-row { grid-template-columns: 0.9fr 1.1fr; gap: 18px; align-items: start; }
+  .ii-left img { max-height: 50vh; width: auto; max-width: 100%; }
+  .ii-right { display: block; }
+
+  /* STAGE TRIPTYCHS: boxes clip instead of growing past the page.
+     Bottom row gets more height — the command block is the long one. */
+  .triptych { grid-template-columns: 1fr 1fr; grid-template-rows: 0.85fr 1.15fr;
+              gap: 12px; margin-top: 10px; overflow: hidden; }
+  .triptych .block { overflow: hidden; }
+  .triptych .concept h1 { font-size: 1.55rem; }
+  .triptych .concept ul { font-size: 0.98rem; line-height: 1.45; }
+  .triptych .block h2   { font-size: 0.85rem; }
+  .triptych pre { font-size: 0.9rem; line-height: 1.35;
+                  white-space: pre-wrap; overflow-wrap: anywhere; }
+}
