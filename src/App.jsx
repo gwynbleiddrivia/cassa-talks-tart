@@ -67,7 +67,7 @@ const SLIDE_DATA = [
     title: "What a Fringe Is — and How It Changes with Distance and Angle",
     content: "A pair of antennas never sees a picture. It sees one striped pattern laid across the whole sky. Move the pair further apart and the stripes get finer; turn the pair and the stripes turn with it — always at a right angle to the line joining the two antennas.",
     layout: "img-interactive",
-    image: "/fringe.jpg",
+    image: "/fringe.png",
     caption: "Wavefronts arriving at two antennas: where they add, a bright band; where they cancel, a dark one. Close pair → bold bands. Far pair → fine bands.",
     sep: 1.20, ang: 163, size: 160
   },
