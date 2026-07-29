@@ -62,7 +62,8 @@
 											}
 
 											.slide-content { margin: auto; max-width: 900px; }
-											.slide-content:has(.img-stack) { max-width: 100%; }
+                      .slide-content:has(.img-stack),
+                      .slide-content:has(.gallery) { max-width: 100%; }
 
 											.slide-footer { display: flex; justify-content: flex-end; }
 
@@ -204,12 +205,21 @@
                  max-width: 62ch; margin: 0 auto; }
 .cover-authors strong { color: #1f6feb; }         /* you — MYA Khondoker — highlighted */
 .cover-meta { font-family: monospace; font-size: clamp(0.8rem, 1.2vw, 1rem); color: #666; }
+/* --- GALLERY: photos own the slide --- */
+.gallery { display: flex; gap: 20px; justify-content: center; align-items: stretch;
+           flex-wrap: nowrap; width: 100%; }
+.gallery figure { margin: 0; flex: 1 1 0; min-width: 0;
+                  display: flex; flex-direction: column; }
+.gallery img { width: 100%; height: clamp(240px, 58vh, 760px);
+               object-fit: cover; border-radius: 8px; }
+.gallery figcaption { font-size: clamp(0.9rem, 1.2vw, 1.15rem); color: #555;
+                      margin-top: 8px; text-align: center; }
+@media (max-width: 600px) {
+  .gallery { flex-wrap: wrap; }
+  .gallery figure { flex: 1 1 100%; }
+  .gallery img { height: auto; }
+}
 
-.gallery { display: flex; gap: 16px; justify-content: center; align-items: flex-start; flex-wrap: wrap; }
-.gallery figure { margin: 0; flex: 1 1 30%; max-width: 32%; }
-.gallery img { width: 100%; height: auto; border-radius: 8px; }
-.gallery figcaption { font-size: 0.85rem; color: #555; margin-top: 6px; text-align: center; }
-@media (max-width: 600px) { .gallery figure { flex: 1 1 100%; max-width: 100%; } }
 
 .overview-lead { font-size: clamp(1.05rem, 1.7vw, 1.45rem); line-height: 1.55; color: #222;
                  max-width: 62ch; margin: 0 auto 1.6rem; }
@@ -219,3 +229,30 @@
 .roadmap { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 .pill { background: #f0f0f3; color: #333; padding: 0.4rem 0.9rem; border-radius: 8px;
         font-family: monospace; font-size: clamp(0.8rem, 1.2vw, 1rem); }
+/* --- AGENDA (slide 4): the whole talk, listed --- */
+.slide-content.agenda { max-width: 100%; width: 100%; }
+.slide-content.agenda h1 { font-size: clamp(1.4rem, 2.5vw, 2.1rem);
+                           text-align: center; margin-bottom: 0.5rem; }
+.agenda-lead { font-size: clamp(0.95rem, 1.45vw, 1.3rem); line-height: 1.5; color: #222;
+               max-width: 82ch; margin: 0 auto 1.5rem; text-align: center; }
+.agenda-cols { display: grid; grid-template-columns: 1fr 1fr 0.72fr;
+               gap: 28px; align-items: start; }
+.agenda-part { border-top: 3px solid #000; padding-top: 0.75rem; }
+.part-num { display: block; font-family: monospace; font-weight: 900; line-height: 1;
+            font-size: clamp(1.5rem, 2.5vw, 2.3rem); color: #1f6feb; }
+.part-title { font-size: clamp(1rem, 1.65vw, 1.45rem); color: #000;
+              margin: 0.25rem 0 0.35rem; }
+.part-kicker { font-size: clamp(0.8rem, 1.05vw, 0.98rem); color: #666;
+               line-height: 1.4; margin-bottom: 0.7rem; }
+.agenda-part ol { margin: 0 0 0 1.4rem; padding: 0; }
+.agenda-part li { font-size: clamp(0.85rem, 1.12vw, 1.08rem); line-height: 1.5;
+                  color: #222; margin-bottom: 0.22rem; }
+.agenda-part.later { border-top-color: #bbb; opacity: 0.6; }
+.agenda-part.later .part-num { color: #999; }
+.agenda-part.later ol { list-style: none; margin-left: 0; }
+.agenda-part.later li { font-family: monospace; color: #555; }
+
+@media (max-width: 700px) {
+  .agenda-cols { grid-template-columns: 1fr; gap: 20px; }
+  .agenda-lead { text-align: left; }
+}

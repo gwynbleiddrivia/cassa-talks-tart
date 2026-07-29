@@ -23,14 +23,43 @@ const SLIDE_DATA = [
   { layout: "gallery", title: "CASSA Workshop 2 · Building & Learning TART",
     photos: [
       { src: "/conf1.jpg", caption: "Students at the TART array" },
-      { src: "/conf2.jpg", caption: "Prof. Tim Molteno lecturing" },
-      { src: "/conf3.jpg", caption: "Working on TART's electronics" }
+      { src: "/conf2.jpg", caption: "Working on TART's electronics" },
+      { src: "/conf3.jpg", caption: "Prof. Tim Molteno lecturing" },
     ] },
 
-  { layout: "overview", title: "One Principle — Hands-On",
-    lead: "The same idea behind the VLA and even JWST: link many small antennas so they act as one giant telescope. The waves they catch reinforce or cancel with the sky, and many baselines — antenna pairs at different distances and angles — build a sharp image. TART makes it hands-on: real sky, open data, hardware a university can build — a classroom for interferometry.",
-    chips: ["24 antennas", "GPS L1 · 1.575 GHz", "λ = 0.19 m"],
-    roadmap: ["Antennas", "Baselines", "uv-plane", "Calibration", "Fringes → Sky", "Open-data pipeline"] },
+  { layout: "agenda", title: "What the Next 13 Minutes Look Like",
+    lead: "Interferometry: instead of one huge dish, link many small antennas — compare the waves each pair catches, and the maths turns them into a single giant telescope.",
+    parts: [
+      { num: "01", title: "Feel the Interferometry",
+        kicker: "TART lets you build the radio sky by eye — no equations needed.",
+        items: [
+          "Two antennas, one interference pattern",
+          "One baseline makes one fringe",
+          "A fringe — the slice of sky a pair sees",
+          "How the fringe changes with distance and angle",
+          "A baseline becomes a point: the uv-plane",
+          "Calibration rotates the arrows",
+          "The conjugate twins, and the complete uv-map",
+          "Add the fringes → the sky appears"
+        ] },
+      { num: "02", title: "Run the Software Pipeline",
+        kicker: "The same picture, reproduced step by step from open data by open software.",
+        items: [
+          "Install the pipeline (Stimela)",
+          "Download raw visibilities",
+          "Create the measurement set",
+          "Label and safeguard the data",
+          "See what the array samples",
+          "Solve the amplitudes",
+          "Solve the phases",
+          "Correct the visibilities",
+          "Fourier-invert and CLEAN",
+          "The final sky"
+        ] },
+      { num: "03", title: "The Hardware", later: true,
+        kicker: "24 antennas, the correlator, the rooftop build.",
+        items: ["Presented in the later talk"] }
+    ] },
 
 
   {
@@ -246,13 +275,22 @@ export default function App() {
       ))}
     </div>
   </div>
-) : slide.layout === "overview" ? (
-  <div className="slide-content">
+) : slide.layout === "agenda" ? (
+  <div className="slide-content agenda">
     <h1>{slide.title}</h1>
-    <p className="overview-lead">{slide.lead}</p>
-    <div className="chips">{slide.chips.map((c, i) => <span key={i} className="chip">{c}</span>)}</div>
-    <div className="roadmap">{slide.roadmap.map((r, i) => <span key={i} className="pill">{r}</span>)}</div>
+    <p className="agenda-lead">{slide.lead}</p>
+    <div className="agenda-cols">
+      {slide.parts.map((p, k) => (
+        <div key={k} className={p.later ? "agenda-part later" : "agenda-part"}>
+          <span className="part-num">{p.num}</span>
+          <h2 className="part-title">{p.title}</h2>
+          <p className="part-kicker">{p.kicker}</p>
+          <ol>{p.items.map((it, n) => <li key={n}>{it}</li>)}</ol>
+        </div>
+      ))}
+    </div>
   </div>
+
 ) : slide.layout === "cover" ? (
   <div className="cover">
     <p className="cover-theme">{slide.theme}</p>

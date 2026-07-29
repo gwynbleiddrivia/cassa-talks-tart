@@ -253,3 +253,97 @@ D. 24-hour: loop snapshots over 24 h, one image per hour -> the S1 slider.
   (install + per-step commands), `all_recipes.txt` (Stimela recipe), `tart_stimela_pythonized_ecdf.py` (pipeline logic).
 - Claude also persists cross-session memory (MEMORY.md index): user-yasin, tart-project-focus,
   tart-imaging-pipeline, tart-talk-deck, pdf-token-efficiency.
+
+---
+
+# ═══════════ SESSION-3 UPDATE (v4) — CURRENT STATE, read this FIRST ═══════════
+
+## STATUS: deck heavily expanded; graphs built on bd-iub; calibration switched to StefCal "solved".
+
+### Big changes this session
+- **Station: hamskraal → `bd-iub`.** All uv/sum/frame graphs regenerated on bd-iub. Re-running the
+  notebook cells + re-copying PNGs is all that's needed if data changes.
+- **Calibration: `CAL_SOURCE="api-phase"` → `"solved"`** (StefCal, `G=G0a*G0p`). Now CORRECTED differs
+  from DATA in BOTH amplitude and phase → `|DATA| != |CORR|` (the old phase-only proof is GONE).
+  Watch dead-antenna amplitude blowups (clip amplitudes by percentile when scaling arrows).
+- **Frequency corrected: GPS L1 = 1.575 GHz** (NOT 1.5 MHz), λ = 0.19 m.
+
+### App.jsx architecture (STANDING RULE: Claude gives paste-ready blocks + location; Dreyfus types. Never edit App.jsx/App.css directly.)
+`SLIDE_DATA` array → render ternary switching on `slide.layout`. Layouts implemented:
+- `cover` — theme + big title + authors[{name,bold}] + meta. (page 1; MYA Khondoker bold+blue)
+- `stack` — images[] stacked; `.slide-content:has(.img-stack){max-width:100%}` lets them fill width.
+- `gallery` — photos[{src,caption}] in a row (workshop photos).
+- `overview` — lead sentence + chips[] (fact badges) + roadmap[] (keyword pills). NOT prose.
+- `interactive` — instances[] of <BaselineExplorer>; single instance auto-sizes to 300, pairs to 150.
+- `img-interactive` — image left + one <BaselineExplorer> right (image/sep/ang/size fields).
+- `triptych` — concept(heading,points[]) | algorithm(code) | recipe(code). Stage slides.
+- `download` — file → <a download> button (needs public/tart-talk.pdf; PDF made via Ctrl+P print CSS).
+- default(simple) — stage/title/content/formula.
+Recurring App.jsx bug: leftover `({/** ... */})` comment blocks render literal `()` — delete them.
+
+### App.css notables
+`.slide-content{margin:auto;max-width:900px}`. Print CSS `@media print`: each `.slide-page` = one page,
+landscape, `.img-stack img{max-height:60vh}`, `.pair-row{display:none}` (skip interactives in PDF).
+Classes: cover*, gallery, overview-lead/chips/chip/roadmap/pill, img-interactive/ii-right, pair-row,
+img-stack, dl-btn.
+
+### Components
+- `BaselineExplorer.jsx` — props {sep,ang,size}. 3 panels: ground (baseline CENTERED, symmetric ax/bx;
+  GROUND_SCALE=(2*(C-16))/MAX_SEP), uv dot, fringe canvas. Two sliders. size 150 in pairs / 300 solo.
+- `FringeSlider.jsx` — pre-rendered frames `/frames/frames/frame_NNN.png`, `N`=frame count (was 36 for
+  hamskraal — RE-CHECK the printed count for bd-iub), play/pause + story caption. May be superseded by
+  the 5 static sum slides.
+
+### Colab graph cells (all read notebook `ms`/`u`/`v`; keep a SELF-CONTAINED setup block on top of each,
+because single-letter globals get clobbered — `k` (interference cell set k=2π/λ; rename kw), `L/M`
+(meshgrid; rename Lg/Mg), `u/v`, and `arrows()` got redefined). Setup defines: mask, u, v, phd, phc,
+k (AUTO-picked = argmax(phase-change × min-amp) so the zoom shows both amp & phase change), uk/vk,
+Vd_k/Vc_k, ampd/ampc, BLUE/HL/MIR, L, lim, uvbox(), arrows(ax,U,V,PH,color,alpha), ghost(), cfmt().
+Images (→ public/):
+- `uv1.png` Slide1: ① antenna layout (⟂-offset length label, white bbox) | ② baseline→uv dot (orange line).
+- `uv2.png` Slide2: ③ ALL dots, both orange(before)+blue(after) arrows via arrows() FIXED length |
+  ④ Argand zoom of one point — before(orange dotted)/after(blue) arrows, 2 boxes (complex #s | amplitude & phase).
+- `uv3.png` Slide3: ⑤ + conjugate twins (mirror −u,−v) | ⑥ Argand V+V*=real (green sum on real axis).
+- `uv4.png` Slide4: ⑦ full uv-map (blue+mirror) | ⑧ hollow-circle "to-do list".
+- `sumsteps/sum{1,2,30,150,full}.png` — 3 panels each: to-do-uv filling | the fringe just added | sky sum.
+- `frames/frames/frame_NNN.png` — same 3-panel, log-spaced, for the slider (if used).
+- `interference.png` (two in-phase sources close/far → bold/fine bands), `baseline_to_fringe.png`
+  (line→dot→fringe short/long), `fringe.jpg` (line-art: antennas+wavefronts+bright-band lines+eye,
+  close/far side by side), `baseline_origin.png` (antennas→baselines→uv).
+- `mstable.png` / `mstable_corr.png` — pandas MS tables as images (corr now differs in |V| too).
+- `gain.png` / `phase.png` — from plotcal outputs (Dreyfus supplies).
+
+### CURRENT SLIDE ORDER (approx; Dreyfus reorders freely)
+cover → tartpic(stack) → workshop(gallery) → overview → interference → "One Baseline Makes One Fringe"
+(baseline_to_fringe) → img-interactive "A Fringe — the Slice of Sky a Pair Sees" (fringe.jpg + explorer)
+→ [more fringe/interactive] → uv1 → uv2 → uv3 → uv4 → sum1..sumfull (payoff) → Stage triptychs 1–8 with
+inserts (API simple slide, mstable, "How Does It Know?" StefCal slide, gain, phase, mstable_corr, clean, final)
+→ download.
+
+### PHYSICS SETTLED THIS SESSION (carry verbatim)
+- uv-plane is NOT the complex plane: u,v are REAL coords (baseline gap ÷ λ, in wavelengths). The
+  visibility is the complex number (phasor) drawn as an arrow AT each dot. Two origins: antenna-map
+  origin arbitrary (cancels in the difference); uv-centre = zero baseline (physical).
+- Arrow A = baseline vector (geometry, fixed, sets fringe orientation ⟂ + spacing ∝1/|b|). Arrow B =
+  visibility (rotates+rescales in calibration; length=amplitude, angle=phase). Different things.
+- Hermitian mirror = point reflection through origin (u,v)→(−u,−v), phase negated (conjugate). SAME
+  fact as orientation 0–180° (swap the two antennas). V+V*=2Re(V)=real → the sky is real.
+- Fringe bolder/finer = band SPACING (≈ λ ÷ antenna separation), not line thickness. Farther → finer.
+- Calibration reasons: per-antenna cable/electronics path, clock offsets, gains, antenna-position survey
+  error. NOT the ionosphere (3 m baselines look through the same patch → cancels). Bent-ruler answers
+  circularity: satellite positions from external ephemerides, only ~23 gains solved, closure phases check.
+- inverse Fourier IS fringes superimposing; the sum washes out everywhere except real sources.
+
+### Ionosphere/scintillation paper idea (Q&A / side project, NOT the talk)
+All-sky GNSS scintillation over Bangladesh (northern EIA crest, under-instrumented, near solar max) with
+TART's imaging = the novel angle. Hard limits: 1-bit amplitude (S4 needs validation vs a real receiver),
+Fresnel scale ~250–400 m ≫ 3 m array (single coherence patch, no spatial resolving), single frequency
+(no dual-freq TEC). Y-values: S4, σφ, ROTI, TEC. Email Tim Molteno before committing.
+
+### GOTCHAS
+- Single-letter global clobbers (see above) — the #1 source of errors; use self-contained setup blocks.
+- FringeSlider `N` MUST equal the printed frame count or you get blank frames.
+- Paths: `uv*.png`→public/; `sum*.png`→public/sumsteps/; frames→public/frames/frames/.
+- git INSIDE WSL (Windows git on \\wsl$ throws dubious-ownership). Push → Vercel auto-deploy ~30s.
+- Token-saving: don't re-paste whole cells — reference "the uv2 cell, panel ④"; use /compact between
+  chunks; new session for a new topic with a 3-line handoff.
