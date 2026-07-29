@@ -1,6 +1,7 @@
 # TART TALK — BUILD HANDOFF (paste this first in any new session)
-# ►► v3: read the "SESSION-2 UPDATE" at the BOTTOM first — it has the CURRENT state
-#      (deploy done, deck built, revised plan, graphs next). The physics below is still valid.
+# ►► v5: read "SESSION-4 UPDATE (v5)" at the BOTTOM first — it has the CURRENT state and the one
+#      OPEN question (CAL_SOURCE). Then SESSION-3 (v4) for architecture. The physics below is all
+#      still valid; the FILENAME lists in v4 were wrong and have been corrected in place.
 
 ## Session start checklist
 Re-attach these (files do NOT persist across sessions):
@@ -272,53 +273,79 @@ D. 24-hour: loop snapshots over 24 h, one image per hour -> the S1 slider.
 `SLIDE_DATA` array → render ternary switching on `slide.layout`. Layouts implemented:
 - `cover` — theme + big title + authors[{name,bold}] + meta. (page 1; MYA Khondoker bold+blue)
 - `stack` — images[] stacked; `.slide-content:has(.img-stack){max-width:100%}` lets them fill width.
-- `gallery` — photos[{src,caption}] in a row (workshop photos).
-- `overview` — lead sentence + chips[] (fact badges) + roadmap[] (keyword pills). NOT prose.
+- `gallery` — photos[{src,caption}] in a row (workshop photos). Full-bleed since session 4:
+  `flex:1 1 0` per figure + `height:clamp(240px,58vh,760px)` + `object-fit:cover` → equal-height row.
+- `agenda` — the talk's roadmap (slide 4). lead (one-line interferometry definition) +
+  parts[{num,title,kicker,items[],later?}] → 3 columns; `later:true` greys a column out
+  (used for "The Hardware — presented in the later talk"). **REPLACED `overview`**, which is gone.
 - `interactive` — instances[] of <BaselineExplorer>; single instance auto-sizes to 300, pairs to 150.
-- `img-interactive` — image left + one <BaselineExplorer> right (image/sep/ang/size fields).
+  Currently UNUSED (the one slide that used it became `img-interactive`).
+- `img-interactive` — image left + one <BaselineExplorer> right. Fields: image, caption, sep, ang, size.
+  `size` MUST be ~160 in this half-width column or the explorer's 3 panels silently wrap 2-over-1.
 - `triptych` — concept(heading,points[]) | algorithm(code) | recipe(code). Stage slides.
 - `download` — file → <a download> button (needs public/tart-talk.pdf; PDF made via Ctrl+P print CSS).
 - default(simple) — stage/title/content/formula.
 Recurring App.jsx bug: leftover `({/** ... */})` comment blocks render literal `()` — delete them.
 
 ### App.css notables
-`.slide-content{margin:auto;max-width:900px}`. Print CSS `@media print`: each `.slide-page` = one page,
-landscape, `.img-stack img{max-height:60vh}`, `.pair-row{display:none}` (skip interactives in PDF).
-Classes: cover*, gallery, overview-lead/chips/chip/roadmap/pill, img-interactive/ii-right, pair-row,
-img-stack, dl-btn.
+`.slide-content{margin:auto;max-width:900px}` — the 900px cap is THE thing that makes a slide look
+cramped. Escape it per-layout: `.slide-content:has(.img-stack), .slide-content:has(.gallery){max-width:100%}`
+and `.slide-content.agenda{max-width:100%}` / `.slide-content.img-interactive{max-width:100%}`.
+Print CSS `@media print`: each `.slide-page` = one page, landscape, `.slide-content{max-height:100vh;
+overflow:hidden}`, `.img-stack img{max-height:60vh}`. NOTE: the `.pair-row{display:none}` print rule
+described in v3 is NOT actually in App.css — interactives DO currently print.
+Classes: cover*, gallery, agenda/agenda-lead/agenda-cols/agenda-part(.later)/part-num/part-title/
+part-kicker, img-interactive/ii-row/ii-left/ii-right, pair-row, img-stack, dl-btn, chips/chip/roadmap/pill
+(the chip+pill CSS survives but `overview` no longer uses it).
 
 ### Components
 - `BaselineExplorer.jsx` — props {sep,ang,size}. 3 panels: ground (baseline CENTERED, symmetric ax/bx;
   GROUND_SCALE=(2*(C-16))/MAX_SEP), uv dot, fringe canvas. Two sliders. size 150 in pairs / 300 solo.
-- `FringeSlider.jsx` — pre-rendered frames `/frames/frames/frame_NNN.png`, `N`=frame count (was 36 for
-  hamskraal — RE-CHECK the printed count for bd-iub), play/pause + story caption. May be superseded by
-  the 5 static sum slides.
+- `FringeSlider.jsx` — pre-rendered frames `/frames/frame_NNN.png` (ONE `frames/` level).
+  `N = 34`, matching the 34 files on disk for bd-iub — VERIFIED 2026-07-30. Range slider + caption
+  (no play/pause in the current build). Still the payoff slide; the static sum slides were never built.
 
 ### Colab graph cells (all read notebook `ms`/`u`/`v`; keep a SELF-CONTAINED setup block on top of each,
 because single-letter globals get clobbered — `k` (interference cell set k=2π/λ; rename kw), `L/M`
 (meshgrid; rename Lg/Mg), `u/v`, and `arrows()` got redefined). Setup defines: mask, u, v, phd, phc,
 k (AUTO-picked = argmax(phase-change × min-amp) so the zoom shows both amp & phase change), uk/vk,
 Vd_k/Vc_k, ampd/ampc, BLUE/HL/MIR, L, lim, uvbox(), arrows(ax,U,V,PH,color,alpha), ghost(), cfmt().
-Images (→ public/):
+Images — VERIFIED against `public/` on 2026-07-30. These are the REAL filenames; earlier
+drafts of this list used names that were never on disk (see "renamed / never existed" below).
 - `uv1.png` Slide1: ① antenna layout (⟂-offset length label, white bbox) | ② baseline→uv dot (orange line).
 - `uv2.png` Slide2: ③ ALL dots, both orange(before)+blue(after) arrows via arrows() FIXED length |
   ④ Argand zoom of one point — before(orange dotted)/after(blue) arrows, 2 boxes (complex #s | amplitude & phase).
 - `uv3.png` Slide3: ⑤ + conjugate twins (mirror −u,−v) | ⑥ Argand V+V*=real (green sum on real axis).
 - `uv4.png` Slide4: ⑦ full uv-map (blue+mirror) | ⑧ hollow-circle "to-do list".
-- `sumsteps/sum{1,2,30,150,full}.png` — 3 panels each: to-do-uv filling | the fringe just added | sky sum.
-- `frames/frames/frame_NNN.png` — same 3-panel, log-spaced, for the slider (if used).
-- `interference.png` (two in-phase sources close/far → bold/fine bands), `baseline_to_fringe.png`
-  (line→dot→fringe short/long), `fringe.jpg` (line-art: antennas+wavefronts+bright-band lines+eye,
-  close/far side by side), `baseline_origin.png` (antennas→baselines→uv).
-- `mstable.png` / `mstable_corr.png` — pandas MS tables as images (corr now differs in |V| too).
+- `frames/frame_NNN.png` — 34 files, `frame_000`…`frame_033`. 3-panel, log-spaced, for FringeSlider.
+  NOTE: **one** `frames/` level, i.e. `public/frames/frame_000.png` → served as `/frames/frame_000.png`.
+- `fringe.png` — line-art: antennas + wavefronts + bright-band lines + eye, close/far side by side.
+  (**`.png`, NOT `.jpg`** — the old note said `fringe.jpg` and the image silently failed to render.)
+- `interference.png` — two in-phase sources close/far → bold/fine bands.
+- `baseline.png` — line→dot→fringe, short/long. (Was listed as `baseline_to_fringe.png`.)
+- `argand.png` — complex-plane figure.
+- `ms.png` / `ms_cal.png` — pandas MS tables as images, before/after applycal (corr now differs in |V| too).
+  (Were listed as `mstable.png` / `mstable_corr.png`.)
 - `gain.png` / `phase.png` — from plotcal outputs (Dreyfus supplies).
+- `clean.png`, `final.png`, `tartpic.jpg`, `conf1.jpg`, `conf2.jpg`, `conf3.jpg`, `final_pdf.pdf`.
 
-### CURRENT SLIDE ORDER (approx; Dreyfus reorders freely)
-cover → tartpic(stack) → workshop(gallery) → overview → interference → "One Baseline Makes One Fringe"
-(baseline_to_fringe) → img-interactive "A Fringe — the Slice of Sky a Pair Sees" (fringe.jpg + explorer)
-→ [more fringe/interactive] → uv1 → uv2 → uv3 → uv4 → sum1..sumfull (payoff) → Stage triptychs 1–8 with
-inserts (API simple slide, mstable, "How Does It Know?" StefCal slide, gain, phase, mstable_corr, clean, final)
-→ download.
+RENAMED / NEVER EXISTED — do not reference these, they are not in `public/`:
+`fringe.jpg` (→ `fringe.png`), `baseline_to_fringe.png` (→ `baseline.png`),
+`mstable.png`/`mstable_corr.png` (→ `ms.png`/`ms_cal.png`), `baseline_origin.png` (absent),
+`sumsteps/sum{1,2,30,150,full}.png` (absent — the sum-step slides were never added to SLIDE_DATA;
+the payoff slide uses FringeSlider instead).
+
+### CURRENT SLIDE ORDER — read straight off App.jsx, VERIFIED 2026-07-30 (19 slides)
+1 cover · 2 "The TART Telescope" (tartpic) · 3 workshop gallery · 4 **agenda** ·
+5 "What a Fringe Is — and How It Changes with Distance and Angle" (img-interactive: fringe.png + explorer) ·
+6 uv1 · 7 uv2 · 8 uv3 · 9 uv4 · 10 payoff (FringeSlider) · 11 Install the Pipeline ·
+12 Stage 1 Download · 13 Stage 2 Create MS · 14 ms.png · 15 Stage 3 Label & Safeguard ·
+16 Stage 4 Inspect · 17 "How Does It Know?" · 18 Stage 5 Amplitudes · 19 gain.png ·
+20 Stage 6 Phases · 21 phase.png · 22 Stage 7 Applycal · 23 ms_cal.png · 24 Stage 8 CLEAN ·
+25 clean.png · 26 final.png · 27 download.
+NOT YET BUILT but promised by the slide-4 agenda: "Two antennas, one interference pattern"
+(interference.png), "One baseline makes one fringe" (baseline.png), "A fringe — the slice of sky a pair
+sees". Either add them between 4 and 5, or trim those three lines from the agenda's part 01.
 
 ### PHYSICS SETTLED THIS SESSION (carry verbatim)
 - uv-plane is NOT the complex plane: u,v are REAL coords (baseline gap ÷ λ, in wavelengths). The
@@ -340,10 +367,53 @@ TART's imaging = the novel angle. Hard limits: 1-bit amplitude (S4 needs validat
 Fresnel scale ~250–400 m ≫ 3 m array (single coherence patch, no spatial resolving), single frequency
 (no dual-freq TEC). Y-values: S4, σφ, ROTI, TEC. Email Tim Molteno before committing.
 
+---
+
+# ═══════════ SESSION-4 UPDATE (v5) — 2026-07-30 — CURRENT STATE, read this FIRST ═══════════
+
+## What changed
+1. **Gallery slide (3) now full-bleed.** The `900px` `.slide-content` cap was the culprit; escaped via
+   `:has(.gallery)`, plus `flex:1 1 0` + `height:clamp(240px,58vh,760px)` + `object-fit:cover`.
+   Knob = the `58vh`. Cropping is centre-weighted; swap to `object-fit:contain` if an edge matters.
+2. **Slide 4 rebuilt as `agenda`** — replaces `overview` entirely (that layout is now dead code).
+   It is the talk's contract with the audience: a one-line interferometry definition, then EVERY
+   slide title listed under three parts — 01 Feel the Interferometry (graphical) / 02 Run the
+   Software Pipeline (Stimela on open data) / 03 The Hardware, greyed out via `later:true` because
+   it is a SEPARATE later talk. That 3-part shape IS the talk's spine; keep it.
+3. **Slide 5 became `img-interactive`** — `fringe.png` left, `<BaselineExplorer size={160}>` right,
+   title "What a Fringe Is — and How It Changes with Distance and Angle". Both the layout branch and
+   the `.ii-*` CSS were NEW this session (v4 claimed they existed; they did not).
+4. **All `public/` filenames verified** and the stale names above corrected. See the "RENAMED /
+   NEVER EXISTED" list — `fringe.jpg` was the live bug: the `<img>` rendered nothing.
+
+## OPEN — resolve before regenerating any graph
+**`CAL_SOURCE` disagrees between this handoff and the code.** v4 says calibration was switched to
+StefCal `"solved"`, but `tart_stimela_pythonized_ecdf.py` has `CAL_SOURCE = "api-phase"` on the
+ACTIVE line with `#CAL_SOURCE = "solved"` commented out beneath it. So the file as committed images
+on api-phase (phase-only, `|DATA| == |CORRECTED|`). Decide which is true, set it once, and note it
+here — the uv2/uv3 arrow graphs mean different things under each (phase-only → arrows only ROTATE;
+solved → they rotate AND rescale, and dead antennas can blow amplitudes up).
+
+## NEXT ACTIONS
+1. Decide the `CAL_SOURCE` question above.
+2. Either build the three missing part-01 slides (interference.png, baseline.png, the fringe-slice
+   slide) or trim them from the agenda so slide 4 doesn't promise what doesn't play.
+3. Re-check slide 4 and slide 5 at PROJECTION width, not laptop width: the agenda's 19 list items and
+   the explorer's 3 panels are both things that degrade quietly rather than visibly breaking.
+4. Regenerate `final_pdf.pdf` (Ctrl+P) once slides 3–5 are settled — the shipped PDF predates them.
+
+## PROCESS NOTE FOR THE NEXT SESSION
+Line numbers in this file and in any Claude reply go stale the moment Dreyfus pastes a block in —
+he pasted three this session and every subsequent line reference was off by ~30. Anchor edits to
+**quoted surrounding text** ("the object whose title is …"), not line numbers, and re-read App.jsx
+before citing a location.
+
 ### GOTCHAS
 - Single-letter global clobbers (see above) — the #1 source of errors; use self-contained setup blocks.
 - FringeSlider `N` MUST equal the printed frame count or you get blank frames.
-- Paths: `uv*.png`→public/; `sum*.png`→public/sumsteps/; frames→public/frames/frames/.
+- Paths: `uv*.png` etc → `public/` (served from `/`); frames → `public/frames/` (served `/frames/…`).
+  There is NO `public/sumsteps/`. **Check the real filename in `public/` before writing a `src`** —
+  `fringe.jpg` vs the actual `fringe.png` cost a debugging round in session 4.
 - git INSIDE WSL (Windows git on \\wsl$ throws dubious-ownership). Push → Vercel auto-deploy ~30s.
 - Token-saving: don't re-paste whole cells — reference "the uv2 cell, panel ④"; use /compact between
   chunks; new session for a new topic with a 3-line handoff.

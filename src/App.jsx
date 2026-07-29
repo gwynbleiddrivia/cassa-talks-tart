@@ -88,11 +88,13 @@ const SLIDE_DATA = [
 
   // ───────── SLIDE 6: dependency install ─────────
   {
-    stage: "Setup", title: "Install the Pipeline", layout: "triptych",
+    stage: "Setup", title: "Install the Necessary packages and recipes", layout: "triptych",
     concept: { heading: "Why", points: [
       "Stimela runs each step inside a container.",
       "Reproducible on any WSL-2 machine.",
-      "Install it once, then just run recipes."
+      "Install it once, then just run recipes.",
+      "git clone https://github.com/gwynbleiddrivia/tart-stimela-run",
+      "Detailed instruction on Stimela imaging and necessary files in this repo"
     ]},
     algorithm: { heading: "Requirements", code: `WSL 2
 Apptainer 1.4.4 (+ suid)
@@ -103,7 +105,11 @@ Recipe files: tart_dl.yaml, casacabs.yaml, casa/` },
 sudo dpkg -i ./apptainer-suid_1.4.4_amd64.deb
 sudo apt install -y squashfuse fuse2fs gocryptfs
 python3 -m venv start && source start/bin/activate
-pip install tart_cargo cult_cargo stimela` }
+pip install tart_cargo cult_cargo stimela
+cp /mnt/d/tart/tart_dl.yaml .
+cp /mnt/d/tart/casacabs.yaml .
+cp /mnt/d/tart/make_mov.py .
+cp -r /mnt/d/tart/casa/ ./casa/` }
   },
 
   // ───────── SLIDES 7+: one interferometry stage each ─────────
@@ -263,7 +269,8 @@ export default function App() {
 						                <span className="slide-num">{formattedNumber}</span>
 						                <div className="qr-container">
 						                  <QRCodeSVG value={currentUrl} size={70} level={"L"} />
-						                  <span className="qr-label">SCAN TO FOLLOW</span>
+                                                            <span className="qr-label">SCAN TO PLAY<br />WITH THIS SLIDE</span>
+
 						                </div>
 						              </header>
 
