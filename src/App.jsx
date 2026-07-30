@@ -95,9 +95,11 @@ const SLIDE_DATA = [
       "Stimela runs each step inside a container.",
       "Reproducible on any WSL-2 machine.",
       "Install it once, then just run recipes.",
-      "git clone https://github.com/gwynbleiddrivia/tart-stimela-run",
-      "Detailed instruction on Stimela imaging and necessary files in this repo"
-    ]},
+      "Every file and the full instructions live in one repo — clone it and follow along."
+    ],
+      callout: { kicker: "Start here",
+                 code: "git clone https://github.com/gwynbleiddrivia/tart-stimela-run" } },
+
     algorithm: { heading: "Requirements", code: `WSL 2
 Apptainer 1.4.4 (+ suid)
 squashfuse, fuse2fs, gocryptfs
@@ -359,7 +361,14 @@ export default function App() {
       <h1>{slide.title}</h1>
       <h2>{slide.concept.heading}</h2>
       <ul>{slide.concept.points.map((p, k) => <li key={k}>{p}</li>)}</ul>
+      {slide.concept.callout && (
+        <div className="concept-callout">
+          <span className="cc-kicker">{slide.concept.callout.kicker}</span>
+          <code>{slide.concept.callout.code}</code>
+        </div>
+      )}
     </div>
+
     <div className="block algorithm">
       <h2>{slide.algorithm.heading}</h2>
       <pre>{slide.algorithm.code}</pre>

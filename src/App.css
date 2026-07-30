@@ -321,4 +321,17 @@
   .triptych .block h2   { font-size: 0.85rem; }
   .triptych pre { font-size: 0.9rem; line-height: 1.35;
                   white-space: pre-wrap; overflow-wrap: anywhere; }
+  .concept-callout { margin-top: 0.7rem; padding: 0.5rem 0.7rem; }
+  .cc-kicker { font-size: 0.62rem; }
+  .concept-callout code { font-size: 0.85rem; }
+
 }
+/* --- CONCEPT CALLOUT: the one line the audience should photograph --- */
+.concept-callout { margin-top: 1rem; padding: 0.7rem 0.9rem;
+                   background: #eaf2fe; border: 2px solid #1f6feb; border-radius: 6px; }
+.cc-kicker { display: block; font-family: monospace; text-transform: uppercase;
+             letter-spacing: 1.5px; font-size: 0.7rem; font-weight: 700;
+             color: #1f6feb; margin-bottom: 0.35rem; }
+.concept-callout code { font-family: monospace; font-weight: 700; color: #0f2d5c;
+                        font-size: clamp(0.85rem, 1.15vw, 1.15rem); line-height: 1.4;
+                        overflow-wrap: anywhere; }
