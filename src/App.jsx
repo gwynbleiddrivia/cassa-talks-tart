@@ -69,6 +69,8 @@ const SLIDE_DATA = [
     layout: "img-interactive",
     image: "/fringe.png",
     caption: "Wavefronts arriving at two antennas: where they add, a bright band; where they cancel, a dark one. Close pair → bold bands. Far pair → fine bands.",
+    note: "↑ These two sliders are live — scan the QR and drag them yourself.",
+
     sep: 1.20, ang: 163, size: 160
   },
 
@@ -107,6 +109,7 @@ sudo apt install -y squashfuse fuse2fs gocryptfs
 python3 -m venv start && source start/bin/activate
 pip install tart_cargo cult_cargo stimela
 cp /mnt/d/tart/{tart_dl.yaml,casacabs.yaml,make_mov.py} .
+cp /mnt/d/tart/make_mov.py .
 cp -r /mnt/d/tart/casa/ ./casa/` }
   },
 
@@ -343,7 +346,9 @@ export default function App() {
       </figure>
       <div className="ii-right">
         <BaselineExplorer sep={slide.sep} ang={slide.ang} size={slide.size ?? 160} />
+        {slide.note && <p className="ii-note">{slide.note}</p>}
       </div>
+
     </div>
   </div>
 

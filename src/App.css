@@ -274,6 +274,10 @@
 .ii-left figcaption { font-size: clamp(0.78rem, 1vw, 0.95rem); color: #555;
                       line-height: 1.45; margin-top: 8px; }
 .ii-right { min-width: 0; }
+.ii-note { margin-top: 14px; padding: 0.55rem 0.8rem;
+           background: #eaf2fe; border-left: 3px solid #1f6feb;
+           border-radius: 4px; color: #14498f; font-weight: 600;
+           font-size: clamp(0.8rem, 1.05vw, 0.98rem); line-height: 1.4; }
 
 @media (max-width: 900px) {
   .ii-row { grid-template-columns: 1fr; gap: 20px; }
@@ -289,10 +293,22 @@
   .slide-page { overflow: hidden; break-inside: avoid; page-break-inside: avoid; }
   .minimalist-frame { overflow: hidden; }
 
-  /* SLIDE 5 (img-interactive): hold the two columns, cap the picture */
+  /* SLIDE 5 (img-interactive): keep the two columns AND the sliders on the page.
+     BaselineExplorer is inline-styled, so these need !important to win.
+     The panels must stay on ONE row — if they wrap 2-over-1 the controls
+     get pushed off the bottom and clipped. */
   .ii-row { grid-template-columns: 0.9fr 1.1fr; gap: 18px; align-items: start; }
-  .ii-left img { max-height: 50vh; width: auto; max-width: 100%; }
+  .ii-left img { max-height: 42vh; width: auto; max-width: 100%; }
   .ii-right { display: block; }
+  .ii-right svg,
+  .ii-right canvas { width: 106px !important; height: 106px !important; }
+  .ii-right label { font-size: 0.72rem !important; }
+  .ii-right input[type="range"] { width: 100% !important; }
+  .ii-right p { font-size: 0.7rem !important; line-height: 1.35 !important;
+                margin-top: 8px !important; }
+  .ii-right .ii-note { font-size: 0.78rem !important; margin-top: 10px !important; }
+
+
 
   /* STAGE TRIPTYCHS: boxes clip instead of growing past the page.
      Bottom row gets more height — the command block is the long one. */
