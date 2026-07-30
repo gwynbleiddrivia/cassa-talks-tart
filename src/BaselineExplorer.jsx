@@ -63,7 +63,8 @@ export default function BaselineExplorer({ sep: sep0 = 0.6, ang: ang0 = 30, size
         {/* ① ground */}
         <div style={panel}>
           <div style={label}>① the two antennas</div>
-          <svg width={S} height={S} style={{ background: "#fafafa", borderRadius: 8 }}>
+          <svg width={S} height={S} viewBox={`0 0 ${S} ${S}`}
+               style={{ background: "#fafafa", borderRadius: 8 }}>
             <line x1={ax} y1={ay} x2={bx} y2={by} stroke="#333" strokeWidth="3" />
             <circle cx={ax} cy={ay} r="7" fill={BLUE} />
             <circle cx={bx} cy={by} r="7" fill={BLUE} />
@@ -77,7 +78,8 @@ export default function BaselineExplorer({ sep: sep0 = 0.6, ang: ang0 = 30, size
         {/* ② uv-map */}
         <div style={panel}>
           <div style={label}>② one dot in the uv-map</div>
-          <svg width={S} height={S} style={{ background: "#fafafa", borderRadius: 8 }}>
+          <svg width={S} height={S} viewBox={`0 0 ${S} ${S}`}
+               style={{ background: "#fafafa", borderRadius: 8 }}>
             <defs>
               <marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="3"
                       orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill={BLUE} /></marker>

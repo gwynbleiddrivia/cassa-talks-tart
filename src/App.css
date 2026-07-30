@@ -293,20 +293,21 @@
   .slide-page { overflow: hidden; break-inside: avoid; page-break-inside: avoid; }
   .minimalist-frame { overflow: hidden; }
 
-  /* SLIDE 5 (img-interactive): keep the two columns AND the sliders on the page.
-     BaselineExplorer is inline-styled, so these need !important to win.
-     The panels must stay on ONE row — if they wrap 2-over-1 the controls
-     get pushed off the bottom and clipped. */
+  /* SLIDE 5 (img-interactive): scale the WHOLE explorer down as one unit.
+     `zoom` scales layout as well as pixels, so the column genuinely becomes
+     shorter — panels, both sliders and the note all land inside the page.
+     Do NOT set width/height on the svg/canvas: that crops instead of scales. */
   .ii-row { grid-template-columns: 0.9fr 1.1fr; gap: 18px; align-items: start; }
-  .ii-left img { max-height: 42vh; width: auto; max-width: 100%; }
-  .ii-right { display: block; }
-  .ii-right svg,
-  .ii-right canvas { width: 106px !important; height: 106px !important; }
-  .ii-right label { font-size: 0.72rem !important; }
-  .ii-right input[type="range"] { width: 100% !important; }
-  .ii-right p { font-size: 0.7rem !important; line-height: 1.35 !important;
-                margin-top: 8px !important; }
-  .ii-right .ii-note { font-size: 0.78rem !important; margin-top: 10px !important; }
+  .ii-left img { max-height: 40vh; width: auto; max-width: 100%; }
+  .ii-left figcaption { font-size: 0.72rem; line-height: 1.35; }
+  .ii-right { display: block; zoom: 0.7; }
+  .ii-right .ii-note { font-size: 1rem; margin-top: 12px; }
+
+  /* free up the vertical room the explorer needs */
+  .slide-content.img-interactive h1 { font-size: 1.35rem; margin-bottom: 0.3rem; }
+  .slide-content.img-interactive .description { font-size: 0.82rem; line-height: 1.45;
+                                               margin-bottom: 0.7rem; }
+
 
 
 
