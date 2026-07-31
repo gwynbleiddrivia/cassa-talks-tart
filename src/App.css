@@ -282,6 +282,73 @@
 @media (max-width: 900px) {
   .ii-row { grid-template-columns: 1fr; gap: 20px; }
 }
+/* --- CONCEPT CALLOUT: the one line the audience should photograph --- */
+.concept-callout { margin-top: 1rem; padding: 0.7rem 0.9rem;
+                   background: #eaf2fe; border: 2px solid #1f6feb; border-radius: 6px; }
+.cc-kicker { display: block; font-family: monospace; text-transform: uppercase;
+             letter-spacing: 1.5px; font-size: 0.7rem; font-weight: 700;
+             color: #1f6feb; margin-bottom: 0.35rem; }
+.concept-callout code { font-family: monospace; font-weight: 700; color: #0f2d5c;
+                        font-size: clamp(0.85rem, 1.15vw, 1.15rem); line-height: 1.4;
+                        overflow-wrap: anywhere; }
+
+/* --- FLOWCHART: the whole pipeline as one picture --- */
+.slide-content.flowchart { max-width: 100%; width: 100%; }
+.fc-grid { display: grid; grid-template-columns: repeat(4, 1fr);
+           gap: 34px 46px; margin-top: 1.5rem; }
+.fc-node { position: relative; border: 2px solid #000; padding: 0.85rem 0.9rem;
+           display: flex; flex-direction: column; justify-content: center;
+           gap: 0.3rem; text-align: center; min-width: 0; }
+.fc-name { font-weight: 700; line-height: 1.25; color: #000;
+           font-size: clamp(0.9rem, 1.35vw, 1.3rem); }
+.fc-step { font-family: monospace; color: #1f6feb; overflow-wrap: anywhere;
+           font-size: clamp(0.68rem, 0.95vw, 0.95rem); }
+
+/* arrows: right inside a row of four, down at the end of each row */
+.fc-node::after { content: "→"; position: absolute; right: -34px; top: 50%;
+                  transform: translateY(-50%); font-size: 1.5rem;
+                  color: #1f6feb; line-height: 1; }
+.fc-node:nth-child(4n)::after { content: "↓"; right: auto; left: 50%;
+                                top: auto; bottom: -30px;
+                                transform: translateX(-50%); }
+.fc-node:last-child::after { content: ""; }
+
+@media (max-width: 900px) {
+  .fc-grid { grid-template-columns: 1fr 1fr; gap: 30px 40px; }
+  .fc-node::after,
+  .fc-node:nth-child(4n)::after { content: "→"; right: -30px; left: auto;
+                                  top: 50%; bottom: auto;
+                                  transform: translateY(-50%); }
+  .fc-node:nth-child(2n)::after { content: "↓"; right: auto; left: 50%;
+                                  top: auto; bottom: -26px;
+                                  transform: translateX(-50%); }
+  .fc-node:last-child::after { content: ""; }
+}
+
+/* --- CONSTANT FOOTER: the two links, on every slide --- */
+.slide-links { display: flex; flex-wrap: wrap; gap: 10px 18px;
+               margin-top: 14px; padding: 0.55rem 0.8rem; flex: 0 0 auto;
+               background: #eaf2fe; border: 2px solid #1f6feb; border-radius: 6px; }
+.sl-item { flex: 1 1 320px; min-width: 0; display: flex;
+           flex-direction: column; gap: 2px; }
+.sl-kicker { font-family: monospace; text-transform: uppercase;
+             letter-spacing: 1.2px; font-size: 0.6rem; font-weight: 700;
+             color: #1f6feb; }
+.slide-links code { font-family: monospace; font-weight: 700; color: #0f2d5c;
+                    font-size: clamp(0.7rem, 0.95vw, 0.95rem);
+                    line-height: 1.35; overflow-wrap: anywhere; }
+
+/* --- CONVERGE: four inputs curving into one hub --- */
+.slide-content.converge { max-width: 100%; width: 100%; }
+.cv-svg { display: block; width: 100%; height: auto;
+          max-height: 58vh; margin: 0.4rem auto 0; }
+.cv-svg .cv-box     { fill: #ffffff; stroke: #000000; stroke-width: 2; }
+.cv-svg .cv-hub-box { fill: #eaf2fe; stroke: #1f6feb; stroke-width: 3.5; }
+.cv-svg .cv-link    { fill: none; stroke: #1f6feb; stroke-width: 3; }
+.cv-svg .cv-head    { font-weight: 700; fill: #000000; }
+.cv-svg .cv-body    { font-family: monospace; fill: #0f2d5c; }
+.cv-svg .cv-hub     { font-weight: 800; fill: #0f2d5c; }
+
 /* ============================================================
    PRINT OVERRIDES — MUST STAY LAST IN THIS FILE.
    Portrait paper is only ~794 CSS px wide, so the max-width
@@ -325,13 +392,20 @@
   .cc-kicker { font-size: 0.62rem; }
   .concept-callout code { font-size: 0.85rem; }
 
+  /* FLOWCHART: one page */
+  .fc-grid { gap: 26px 38px; margin-top: 0.9rem; }
+  .fc-node { padding: 0.55rem 0.6rem; }
+  .fc-name { font-size: 0.92rem; }
+  .fc-step { font-size: 0.68rem; }
+  .fc-node::after { font-size: 1.15rem; right: -28px; }
+  .fc-node:nth-child(4n)::after { bottom: -23px; }
+
+  /* CONSTANT FOOTER: shrink hard so the triptychs keep their room */
+  .slide-links { margin-top: 8px; padding: 0.35rem 0.55rem; gap: 4px 14px; }
+  .sl-kicker { font-size: 0.5rem; }
+  .slide-links code { font-size: 0.62rem; line-height: 1.25; }
+
+  /* CONVERGE: leave room for the footer */
+  .cv-svg { max-height: 50vh; }
+
 }
-/* --- CONCEPT CALLOUT: the one line the audience should photograph --- */
-.concept-callout { margin-top: 1rem; padding: 0.7rem 0.9rem;
-                   background: #eaf2fe; border: 2px solid #1f6feb; border-radius: 6px; }
-.cc-kicker { display: block; font-family: monospace; text-transform: uppercase;
-             letter-spacing: 1.5px; font-size: 0.7rem; font-weight: 700;
-             color: #1f6feb; margin-bottom: 0.35rem; }
-.concept-callout code { font-family: monospace; font-weight: 700; color: #0f2d5c;
-                        font-size: clamp(0.85rem, 1.15vw, 1.15rem); line-height: 1.4;
-                        overflow-wrap: anywhere; }

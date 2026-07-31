@@ -88,31 +88,32 @@ const SLIDE_DATA = [
     layout: "stack", images: [], after: "slider" },
   
 
-  // ───────── SLIDE 6: dependency install ─────────
+  // ───────── SLIDE 6: the whole pipeline in one picture ─────────
   {
-    stage: "Setup", title: "Install the Necessary packages and recipes", layout: "triptych",
-    concept: { heading: "Why", points: [
-      "Stimela runs each step inside a container.",
-      "Reproducible on any WSL-2 machine.",
-      "Install it once, then just run recipes.",
-      "Every file and the full instructions live in one repo — clone it and follow along."
-    ],
-      callout: { kicker: "Start here",
-                 code: "git clone https://github.com/gwynbleiddrivia/tart-stimela-run" } },
+    stage: "Setup", title: "Software Pipeline for Producing an Image", layout: "flowchart",
+    steps: [
+      { name: "Installation" },
+      { name: "Downloading Visibilities", step: "download-hdf" },
+      { name: "Measurement Set",          step: "create-ms" },
+      { name: "Antenna and UV plane",     step: "plotuv · plotants" },
+      { name: "Amplitude Calibration",    step: "calibrate_amplitude" },
+      { name: "Phase Calibration",        step: "calibrate_phase" },
+      { name: "Apply Calibration",        step: "applycal" },
+      { name: "CLEAN" }
+    ]
+  },
 
-    algorithm: { heading: "Requirements", code: `WSL 2
-Apptainer 1.4.4 (+ suid)
-squashfuse, fuse2fs, gocryptfs
-Python venv: tart_cargo, cult_cargo, stimela
-Recipe files: tart_dl.yaml, casacabs.yaml, casa/` },
-    recipe: { heading: "Install", code: `sudo apt install -y ./apptainer_1.4.4_amd64.deb
-sudo dpkg -i ./apptainer-suid_1.4.4_amd64.deb
-sudo apt install -y squashfuse fuse2fs gocryptfs
-python3 -m venv start && source start/bin/activate
-pip install tart_cargo cult_cargo stimela
-cp /mnt/d/tart/{tart_dl.yaml,casacabs.yaml,make_mov.py} .
-cp /mnt/d/tart/make_mov.py .
-cp -r /mnt/d/tart/casa/ ./casa/` }
+  // ───────── SLIDE 7: Installation (flowchart node 1) ─────────
+  {
+    stage: "Setup", title: "Installation", layout: "converge",
+    hub: "Installation",
+    sources: [
+      { head: "Apptainer", body: ["1.4.4  (+ suid)"] },
+      { body: ["squashfuse, fuse2fs,", "gocryptfs"] },
+      { body: ["tart_cargo, cult_cargo,", "stimela", "inside a Python venv"] },
+      { head: "Recipe files",
+        body: ["tart_dl.yaml,", "casacabs.yaml,", "casa/  (all CASA tools)"] }
+    ]
   },
 
   // ───────── SLIDES 7+: one interferometry stage each ─────────
@@ -354,6 +355,65 @@ export default function App() {
     </div>
   </div>
 
+) : slide.layout === "converge" ? (
+  <div className="slide-content converge">
+    <p className="stage-label">{slide.stage}</p>
+    <h1>{slide.title}</h1>
+    <svg className="cv-svg" viewBox="0 0 1100 560" role="img">
+      <defs>
+        <marker id="cvArrow" viewBox="0 0 10 10" refX="9" refY="5"
+                markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f6feb" />
+        </marker>
+      </defs>
+
+      <rect className="cv-hub-box" x="400" y="190" width="300" height="180" rx="10" />
+      <text className="cv-hub" x="550" y="292" textAnchor="middle" fontSize="38">
+        {slide.hub}
+      </text>
+
+      {slide.sources.map((s, k) => {
+        const G = [
+          { bx:30,  by:40,  bw:300, bh:95,  cx:180, hy:78,  ly:104,
+            d:"M 330 87 C 400 95, 455 125, 460 188" },
+          { bx:30,  by:420, bw:300, bh:110, cx:180, hy:0,   ly:466,
+            d:"M 330 475 C 400 468, 455 437, 460 372" },
+          { bx:770, by:40,  bw:300, bh:110, cx:920, hy:0,   ly:72,
+            d:"M 770 95 C 700 103, 645 125, 640 188" },
+          { bx:770, by:400, bw:300, bh:130, cx:920, hy:432, ly:460,
+            d:"M 770 465 C 700 458, 645 437, 640 372" }
+        ][k];
+        return (
+          <g key={k}>
+            <path className="cv-link" d={G.d} markerEnd="url(#cvArrow)" />
+            <rect className="cv-box" x={G.bx} y={G.by} width={G.bw} height={G.bh} rx="8" />
+            {s.head && (
+              <text className="cv-head" x={G.cx} y={G.hy} textAnchor="middle" fontSize="22">
+                {s.head}
+              </text>
+            )}
+            {s.body.map((ln, n) => (
+              <text key={n} className="cv-body" x={G.cx} y={G.ly + n * 25}
+                    textAnchor="middle" fontSize="17">{ln}</text>
+            ))}
+          </g>
+        );
+      })}
+    </svg>
+  </div>
+) : slide.layout === "flowchart" ? (
+  <div className="slide-content flowchart">
+    <p className="stage-label">{slide.stage}</p>
+    <h1>{slide.title}</h1>
+    <div className="fc-grid">
+      {slide.steps.map((s, k) => (
+        <div key={k} className="fc-node">
+          <span className="fc-name">{s.name}</span>
+          {s.step && <span className="fc-step">{s.step}</span>}
+        </div>
+      ))}
+    </div>
+  </div>
 ) : slide.layout === "triptych" ? (
   <div className="triptych">
     <div className="block concept">
@@ -387,6 +447,17 @@ export default function App() {
     <p className="ref-text">Stimela Step: {slide.notebookRef}</p>
   </div>
 )}
+
+<footer className="slide-links">
+  <div className="sl-item">
+    <span className="sl-kicker">TART map &amp; documentation</span>
+    <code>https://tart.elec.ac.nz/</code>
+  </div>
+  <div className="sl-item">
+    <span className="sl-kicker">Stimela recipes &amp; documentation</span>
+    <code>git clone https://github.com/gwynbleiddrivia/tart-stimela-run</code>
+  </div>
+</footer>
 
 
 
