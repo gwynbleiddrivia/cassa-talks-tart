@@ -280,9 +280,12 @@ D. 24-hour: loop snapshots over 24 h, one image per hour -> the S1 slider.
   (used for "The Hardware — presented in the later talk"). **REPLACED `overview`**, which is gone.
 - `interactive` — instances[] of <BaselineExplorer>; single instance auto-sizes to 300, pairs to 150.
   Currently UNUSED (the one slide that used it became `img-interactive`).
-- `img-interactive` — image left + one <BaselineExplorer> right. Fields: image, caption, sep, ang, size.
+- `img-interactive` — image left + one <BaselineExplorer> right. Fields: image, caption, sep, ang,
+  size, **note** (optional → `.ii-note` blue callout under the explorer: "these sliders are live").
   `size` MUST be ~160 in this half-width column or the explorer's 3 panels silently wrap 2-over-1.
-- `triptych` — concept(heading,points[]) | algorithm(code) | recipe(code). Stage slides.
+- `triptych` — concept(heading,points[],**callout?{kicker,code}**) | algorithm(code) | recipe(code).
+  Stage slides. `callout` = light-blue bordered monospace box under the bullets, for the ONE line the
+  audience should photograph (currently the `git clone` on the install slide).
 - `download` — file → <a download> button (needs public/tart-talk.pdf; PDF made via Ctrl+P print CSS).
 - default(simple) — stage/title/content/formula.
 Recurring App.jsx bug: leftover `({/** ... */})` comment blocks render literal `()` — delete them.
@@ -337,8 +340,9 @@ the payoff slide uses FringeSlider instead).
 
 ### CURRENT SLIDE ORDER — read straight off App.jsx, VERIFIED 2026-07-30 (19 slides)
 1 cover · 2 "The TART Telescope" (tartpic) · 3 workshop gallery · 4 **agenda** ·
-5 "What a Fringe Is — and How It Changes with Distance and Angle" (img-interactive: fringe.png + explorer) ·
-6 uv1 · 7 uv2 · 8 uv3 · 9 uv4 · 10 payoff (FringeSlider) · 11 Install the Pipeline ·
+5 "What a Fringe Is — and How It Changes with Distance and Angle" (img-interactive: fringe.png +
+explorer + note) · 6 uv1 · 7 uv2 · 8 uv3 · 9 uv4 · 10 payoff (FringeSlider) ·
+11 "Install the Necessary packages and recipes" (triptych + git-clone callout) ·
 12 Stage 1 Download · 13 Stage 2 Create MS · 14 ms.png · 15 Stage 3 Label & Safeguard ·
 16 Stage 4 Inspect · 17 "How Does It Know?" · 18 Stage 5 Amplitudes · 19 gain.png ·
 20 Stage 6 Phases · 21 phase.png · 22 Stage 7 Applycal · 23 ms_cal.png · 24 Stage 8 CLEAN ·
@@ -385,6 +389,51 @@ Fresnel scale ~250–400 m ≫ 3 m array (single coherence patch, no spatial res
    the `.ii-*` CSS were NEW this session (v4 claimed they existed; they did not).
 4. **All `public/` filenames verified** and the stale names above corrected. See the "RENAMED /
    NEVER EXISTED" list — `fringe.jpg` was the live bug: the `<img>` rendered nothing.
+5. **Site title** — `index.html` `<title>` was literally `app`; now the full talk title. (`package.json`
+   `"name":"app"` is npm-internal, never shown, left alone. The Vercel URL is renamed only in the
+   Vercel dashboard — and renaming it invalidates every QR already printed in the PDF.)
+6. **QR label rewritten.** "SCAN TO FOLLOW" read like *subscribe*; it now points at the playable deck.
+   Structure: `.qr-label` is a flex column of `.qr-cta` / `.qr-or` / `.qr-url`, capped at 210px so the
+   long URL stops stretching the header and shoving the slide number leftward. The typed URL
+   `cassa-talks-tart-flame.vercel.app` is HARDCODED in App.jsx — it and the printed PDF both go stale
+   if the Vercel project is ever renamed. (The QR itself encodes `window.location.href`; the
+   build-time fallback string in App.jsx is still the old `stimela-talk.vercel.app`.)
+7. **`viewBox` added to both `<svg>`s in BaselineExplorer.jsx** — they had `width`/`height` attrs but
+   no viewBox, so any CSS resize CROPPED the drawing instead of scaling it. This was the cut-off
+   "two antennas" panel in the PDF. Also makes the explorer behave in any narrow container on screen.
+8. **`concept.callout`** — optional field on triptych `concept`: `{kicker, code}` renders a
+   light-blue bordered monospace box under the bullets (`.concept-callout` / `.cc-kicker`). Built for
+   the `git clone …/tart-stimela-run` line on the install slide, which had to stop looking like a
+   sibling bullet. Deliberately LIGHT: the bottom-right recipe box is already dark-with-blue-border
+   and a second dark box competes with it.
+9. **`note` field on `img-interactive`** — renders `.ii-note` (blue callout) under the explorer,
+   telling the audience the sliders are live on the web version.
+
+## PRINT / PDF — the hard-won rules (Ctrl+P → Save as PDF)
+**Set Layout = Landscape in the print dialog.** `@page{size:landscape}` is only a request and the
+dialog overrides it. This matters more than it sounds: portrait A4 is ~794 CSS px wide, which FIRES
+THE `max-width:900px` MOBILE QUERIES DURING PRINTING. That is what collapsed slide 5 to one column
+and hid the explorer entirely.
+
+**There is a second `@media print` block at the very END of App.css and it MUST STAY LAST.** The
+mobile `@media (max-width:…)` queries sit further down the file than the original print block, so on
+equal specificity they win on source order. Being last is what lets the print rules beat them without
+`!important`. Do not "tidy" it upward.
+
+Other print facts:
+- The `triptych` branch renders `<div className="triptych">` as a DIRECT CHILD of `.minimalist-frame`,
+  NOT inside `.slide-content`. So `.slide-content{max-height:100vh;overflow:hidden}` never applied to
+  any stage slide. On screen `.triptych .block{overflow:auto}` scrolls so you never notice; in print
+  Chrome expands the box past the page bottom and the last line vanishes. Fixed by `overflow:hidden`
+  on `.slide-page`/`.minimalist-frame`/`.triptych .block` + smaller print type + rows `0.85fr 1.15fr`
+  (the bottom command box is the long one).
+- Slide 5's explorer is scaled with `.ii-right{zoom:0.7}` in print. `zoom` (not `transform:scale`)
+  because it shrinks the LAYOUT box too, so the column actually stops overflowing. Knob = 0.7.
+  NEVER size the explorer by putting width/height on its `svg`/`canvas` — see item 7 above.
+  Plan B if `zoom` misbehaves: `size:130` in the slide data, no zoom.
+- BaselineExplorer is inline-styled with no classNames, so overriding it needs `!important` and
+  element selectors (`.ii-right label`, `.ii-right input[type="range"]`). Prefer `zoom` over fighting it.
+- Specificity gotcha: `.ii-right p` (class+type) BEATS `.ii-note` (bare class). Use `.ii-right .ii-note`.
 
 ## OPEN — resolve before regenerating any graph
 **`CAL_SOURCE` disagrees between this handoff and the code.** v4 says calibration was switched to
@@ -395,12 +444,21 @@ here — the uv2/uv3 arrow graphs mean different things under each (phase-only �
 solved → they rotate AND rescale, and dead antennas can blow amplitudes up).
 
 ## NEXT ACTIONS
+0. **Dreyfus is about to make a MAJOR slide change** (announced end of session 4, nature unspecified).
+   Re-read App.jsx before assuming anything below is still true.
 1. Decide the `CAL_SOURCE` question above.
 2. Either build the three missing part-01 slides (interference.png, baseline.png, the fringe-slice
    slide) or trim them from the agenda so slide 4 doesn't promise what doesn't play.
 3. Re-check slide 4 and slide 5 at PROJECTION width, not laptop width: the agenda's 19 list items and
    the explorer's 3 panels are both things that degrade quietly rather than visibly breaking.
-4. Regenerate `final_pdf.pdf` (Ctrl+P) once slides 3–5 are settled — the shipped PDF predates them.
+4. Regenerate `final_pdf.pdf` (Ctrl+P, LANDSCAPE) once the slides settle — the shipped PDF predates
+   everything in session 4.
+5. Optional, offered but not built: repeat the `git clone` callout on the closing "Under One Sky"
+   slide next to the download button — that is when phones actually come out.
+6. Optional content fix on the install slide: the four `cp /mnt/d/tart/…` lines collapse to
+   `cp -r /mnt/d/tart/{tart_dl.yaml,casacabs.yaml,make_mov.py,casa} .` — and `/mnt/d/tart` is a path
+   that exists only on Dreyfus's machine, so a `git clone` + copy-from-clone is the honest version
+   for the audience.
 
 ## PROCESS NOTE FOR THE NEXT SESSION
 Line numbers in this file and in any Claude reply go stale the moment Dreyfus pastes a block in —
