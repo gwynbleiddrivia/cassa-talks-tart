@@ -16,7 +16,7 @@ const SLIDE_DATA = [
       { name: "SH Muzaffar" }, { name: "MFH Sami" }, { name: "T Rahman" },
       { name: "MH Masum" }, { name: "KMB Asad" }
     ],
-    meta: "PSSARC 2026 · Cebu, Philippines · CASSA / Independent University, Bangladesh"
+    meta: "PSSARC 2026 · University of San Carlos · Cebu, Philippines · CASSA / Independent University, Bangladesh"
   },
   { layout: "stack", title: "The TART Telescope", images: ["/tartpic.jpg"] },
 
@@ -30,32 +30,12 @@ const SLIDE_DATA = [
   { layout: "agenda", title: "Overview of the talk",
     lead: "Interferometry: instead of one huge dish, link many small antennas — compare the waves each pair catches, and the maths turns them into a single giant telescope.",
     parts: [
-      { num: "01", title: "Feel the Interferometry",
-        kicker: "TART lets you build the radio sky by eye — no equations needed.",
-        items: [
-          "Two antennas, one interference pattern",
-          "One baseline makes one fringe",
-          "A fringe — the slice of sky a pair sees",
-          "How the fringe changes with distance and angle",
-          "A baseline becomes a point: the uv-plane",
-          "Calibration rotates the arrows",
-          "The conjugate twins, and the complete uv-map",
-          "Add the fringes → the sky appears"
-        ] },
-      { num: "02", title: "Run the Software Pipeline",
-        kicker: "The same picture, reproduced step by step from open data by open software.",
-        items: [
-          "Install the pipeline (Stimela)",
-          "Download raw visibilities",
-          "Create the measurement set",
-          "Label and safeguard the data",
-          "See what the array samples",
-          "Solve the amplitudes",
-          "Solve the phases",
-          "Correct the visibilities",
-          "Fourier-invert and CLEAN",
-          "The final sky"
-        ] },
+      // items for parts 01 and 02 are read straight off the real slide titles
+      // (see AGENDA_PART1 / AGENDA_PART2 below) so this list can never drift.
+      { num: "01", title: "Feel the Interferometry", auto: 1,
+        kicker: "TART lets you build the radio sky by eye — no equations needed." },
+      { num: "02", title: "Run the Software Pipeline", auto: 2,
+        kicker: "The same picture, reproduced step by step from open data by open software." },
       { num: "03", title: "The Hardware", later: true,
         kicker: "24 antennas, the correlator, the rooftop build.",
         items: ["Presented in the later talk"] }
@@ -263,6 +243,17 @@ const TOTAL_SLIDES = SLIDE_DATA.filter(s => !s.printOnly).length;
 // The links footer starts at the pipeline flowchart and runs to the end.
 const FOOTER_FROM = SLIDE_DATA.findIndex(s => s.layout === "flowchart");
 
+// ── AGENDA, derived from the deck itself so it can never drift out of date.
+//    Part 01 = "An interferometer - fringe" through the flowchart (inclusive).
+//    Part 02 = everything after the flowchart.
+//    Print-only variations and the closing download slide are skipped.
+const AGENDA_START = SLIDE_DATA.findIndex(s => s.title === "An interferometer - fringe");
+const agendaTitles = (from, to) => SLIDE_DATA.slice(from, to)
+  .filter(s => !s.printOnly && s.title && s.layout !== "download")
+  .map(s => s.title);
+const AGENDA_PART1 = agendaTitles(AGENDA_START, FOOTER_FROM + 1);
+const AGENDA_PART2 = agendaTitles(FOOTER_FROM + 1, SLIDE_DATA.length);
+
 export default function App() {
 	  const currentUrl = typeof window !== 'undefined' ? window.location.href : 'https://stimela-talk.vercel.app';
 
@@ -287,6 +278,7 @@ export default function App() {
                                 <span className="qr-or">— or visit —</span>
                                 <span className="qr-url">cassa-talks-tart-flame.vercel.app</span>
                               </span>
+                              <div className="page-num">{visibleCount} of {TOTAL_SLIDES}</div>
 
 						                </div>
 						              </header>
@@ -312,7 +304,9 @@ export default function App() {
           <span className="part-num">{p.num}</span>
           <h2 className="part-title">{p.title}</h2>
           <p className="part-kicker">{p.kicker}</p>
-          <ol>{p.items.map((it, n) => <li key={n}>{it}</li>)}</ol>
+          <ol>{(p.auto === 1 ? AGENDA_PART1
+                : p.auto === 2 ? AGENDA_PART2
+                : p.items).map((it, n) => <li key={n}>{it}</li>)}</ol>
         </div>
       ))}
     </div>
@@ -329,6 +323,10 @@ export default function App() {
       ))}
     </p>
     <p className="cover-meta">{slide.meta}</p>
+    <div className="cover-logos">
+      <img src="/iub.png" alt="Independent University, Bangladesh" />
+      <img src="/cassa.png" alt="CASSA" />
+    </div>
   </div>
 ) : slide.layout === "download" ? (
 
@@ -556,8 +554,6 @@ export default function App() {
     </div>
   </footer>
 )}
-
-<div className="page-num">{visibleCount} of {TOTAL_SLIDES}</div>
 
 
 
