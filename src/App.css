@@ -204,13 +204,13 @@
 .cover { position: relative; display: flex; flex-direction: column;
          justify-content: center; align-items: center;
          height: 100%; text-align: center; gap: 1.3rem;
-         padding: 0 1.5rem clamp(76px, 15vh, 175px); }
+         padding: 0 1.5rem clamp(100px, 20vh, 240px); }
 /* institution marks pinned to the cover's bottom corners: iub left, cassa right */
 .cover-logos { position: absolute; left: 0; right: 0; bottom: 0;
                display: flex; justify-content: space-between; align-items: flex-end;
                gap: 20px; pointer-events: none; }
-.cover-logos img { height: clamp(56px, 12vh, 150px); width: auto;
-                   max-width: 42%; object-fit: contain; }
+.cover-logos img { height: clamp(76px, 17vh, 210px); width: auto;
+                   max-width: 44%; object-fit: contain; }
 
 /* AGENDA part 02: the pipeline as soft rounded pills, not a bordered list */
 .agenda-chain { display: flex; flex-direction: column; gap: 16px; margin-top: 0.1rem; }
