@@ -372,7 +372,7 @@
 /* --- CONVERGE: four inputs curving into one hub --- */
 .slide-content.converge { max-width: 100%; width: 100%; }
 .cv-svg { display: block; width: 100%; height: auto;
-          max-height: 58vh; margin: 0.4rem auto 0; }
+          max-height: 72vh; margin: 0.4rem auto 0; }
 .cv-svg .cv-box     { fill: #ffffff; stroke: #000000; stroke-width: 2; }
 .cv-svg .cv-hub-box { fill: #eaf2fe; stroke: #1f6feb; stroke-width: 3.5; }
 .cv-svg .cv-link    { fill: none; stroke: #1f6feb; stroke-width: 3; }
@@ -512,7 +512,7 @@
   .slide-links code { font-size: 0.62rem; line-height: 1.25; }
 
   /* CONVERGE: leave room for the footer */
-  .cv-svg { max-height: 50vh; }
+  .cv-svg { max-height: 62vh; }
 
   /* AGENDA: bigger on screen, dialled back so it still fits one page */
   .agenda-lead { font-size: 0.92rem; line-height: 1.4; margin-bottom: 0.9rem; }

@@ -423,34 +423,34 @@ export default function App() {
         </marker>
       </defs>
 
-      <path className="cv-link" d="M 330 440 C 385 437, 425 420, 430 344"
+      <path className="cv-link" d="M 335 440 C 385 437, 425 420, 430 344"
             markerEnd="url(#haArrow)" />
 
-      <rect className="cv-hub-box" x="380" y="170" width="310" height="170" rx="10" />
+      <rect className="cv-hub-box" x="360" y="170" width="350" height="170" rx="10" />
       {slide.hub.map((ln, n) => (
-        <text key={n} className="cv-hub" x="535" y={210 + n * 50}
-              textAnchor="middle" fontSize="42">{ln}</text>
+        <text key={n} className="cv-hub" x="535" y={205 + n * 58}
+              textAnchor="middle" fontSize="50">{ln}</text>
       ))}
-      <text className="cv-sub" x="535" y="306" textAnchor="middle" fontSize="24">
+      <text className="cv-sub" x="535" y="312" textAnchor="middle" fontSize="28">
         {slide.hubStep}
       </text>
 
-      <rect className="cv-box" x="40" y="380" width="290" height="120" rx="8" />
+      <rect className="cv-box" x="35" y="380" width="300" height="120" rx="8" />
       {slide.source.body.map((ln, n) => (
-        <text key={n} className="cv-body" x="185" y={424 + n * 26}
-              textAnchor="middle" fontSize="16">{ln}</text>
+        <text key={n} className="cv-body" x="185" y={424 + n * 28}
+              textAnchor="middle" fontSize="18">{ln}</text>
       ))}
 
-      <rect className="cv-aside-box" x="740" y="130" width="330" height="300" rx="8" />
-      <text className="cv-head" x="905" y="186" textAnchor="middle" fontSize="20">
+      <rect className="cv-aside-box" x="730" y="130" width="340" height="300" rx="8" />
+      <text className="cv-head" x="900" y="186" textAnchor="middle" fontSize="24">
         {slide.aside.head}
       </text>
-      <text className="cv-body" x="905" y="222" textAnchor="middle" fontSize="14">
+      <text className="cv-body" x="900" y="224" textAnchor="middle" fontSize="16">
         {slide.aside.base}
       </text>
       {slide.aside.paths.map((p, n) => (
-        <text key={n} className="cv-path" x="768" y={264 + n * 32}
-              fontSize="17">{p}</text>
+        <text key={n} className="cv-path" x="752" y={266 + n * 34}
+              fontSize="21">{p}</text>
       ))}
     </svg>
   </div>
@@ -465,20 +465,20 @@ export default function App() {
         </marker>
       </defs>
 
-      <rect className="cv-hub-box" x="380" y="190" width="340" height="180" rx="10" />
-      <text className="cv-hub" x="550" y="297" textAnchor="middle" fontSize="48">
+      <rect className="cv-hub-box" x="360" y="190" width="380" height="180" rx="10" />
+      <text className="cv-hub" x="550" y="300" textAnchor="middle" fontSize="54">
         {slide.hub}
       </text>
 
       {slide.sources.map((s, k) => {
         const G = [
-          { bx:30,  by:40,  bw:300, bh:95,  cx:180, hy:78,  ly:104,
+          { bx:30,  by:40,  bw:300, bh:95,  cx:180, hy:76,  ly:108,
             d:"M 330 87 C 400 95, 455 125, 460 188" },
-          { bx:30,  by:420, bw:300, bh:110, cx:180, hy:0,   ly:466,
+          { bx:30,  by:420, bw:300, bh:110, cx:180, hy:0,   ly:462,
             d:"M 330 475 C 400 468, 455 437, 460 372" },
-          { bx:770, by:40,  bw:300, bh:110, cx:920, hy:0,   ly:72,
+          { bx:770, by:40,  bw:300, bh:110, cx:920, hy:0,   ly:68,
             d:"M 770 95 C 700 103, 645 125, 640 188" },
-          { bx:770, by:400, bw:300, bh:130, cx:920, hy:432, ly:460,
+          { bx:770, by:400, bw:300, bh:130, cx:920, hy:430, ly:458,
             d:"M 770 465 C 700 458, 645 437, 640 372" }
         ][k];
         return (
@@ -486,13 +486,13 @@ export default function App() {
             <path className="cv-link" d={G.d} markerEnd="url(#cvArrow)" />
             <rect className="cv-box" x={G.bx} y={G.by} width={G.bw} height={G.bh} rx="8" />
             {s.head && (
-              <text className="cv-head" x={G.cx} y={G.hy} textAnchor="middle" fontSize="22">
+              <text className="cv-head" x={G.cx} y={G.hy} textAnchor="middle" fontSize="26">
                 {s.head}
               </text>
             )}
             {s.body.map((ln, n) => (
-              <text key={n} className="cv-body" x={G.cx} y={G.ly + n * 25}
-                    textAnchor="middle" fontSize="17">{ln}</text>
+              <text key={n} className="cv-body" x={G.cx} y={G.ly + n * 28}
+                    textAnchor="middle" fontSize="20">{ln}</text>
             ))}
           </g>
         );
