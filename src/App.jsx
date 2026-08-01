@@ -428,10 +428,10 @@ export default function App() {
 
       <rect className="cv-hub-box" x="360" y="170" width="350" height="170" rx="10" />
       {slide.hub.map((ln, n) => (
-        <text key={n} className="cv-hub" x="535" y={205 + n * 58}
+        <text key={n} className="cv-hub" x="535" y={218 + n * 54}
               textAnchor="middle" fontSize="50">{ln}</text>
       ))}
-      <text className="cv-sub" x="535" y="312" textAnchor="middle" fontSize="28">
+      <text className="cv-sub" x="535" y="318" textAnchor="middle" fontSize="28">
         {slide.hubStep}
       </text>
 
