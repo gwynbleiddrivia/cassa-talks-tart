@@ -390,10 +390,10 @@
 .ht-hub { flex: 0 0 auto; text-align: center; min-width: 250px;
           padding: 2rem 1.6rem;
           background: #eaf2fe; border: 3px solid #1f6feb; border-radius: 10px; }
-.ht-hub-name { display: block; font-weight: 800; color: #0f2d5c; line-height: 1.2;
-               font-size: clamp(1.3rem, 2.4vw, 2.2rem); }
-.ht-hub-step { display: block; font-family: monospace; color: #666; margin-top: 8px;
-               font-size: clamp(0.7rem, 1vw, 0.95rem); }
+.ht-hub-name { display: block; font-weight: 800; color: #0f2d5c; line-height: 1.15;
+               font-size: clamp(1.7rem, 3.4vw, 3.2rem); }
+.ht-hub-step { display: block; font-family: monospace; color: #666; margin-top: 10px;
+               font-size: clamp(0.85rem, 1.3vw, 1.25rem); }
 
 .ht-hub-step + .ht-hub-step { margin-top: 2px; }
 
@@ -422,6 +422,20 @@
 .page-num { margin-top: 5px; font-family: monospace; font-weight: 700;
             font-size: clamp(0.95rem, 1.5vw, 1.35rem);
             letter-spacing: 0.5px; color: #555; user-select: none; }
+
+/* --- MOBILE HEADER: shrink the QR block and pin it hard right.
+       Placed this late on purpose — .page-num and .qr-* are bare classes
+       defined above, so this needs to come after them to win on source order.
+       600px never fires while printing (portrait paper is ~794px). --- */
+@media (max-width: 600px) {
+  .slide-header { gap: 12px; justify-content: flex-end; }
+  .qr-container { align-items: flex-end; gap: 2px; }
+  .qr-container svg { width: 46px; height: 46px; }
+  .qr-label { max-width: 150px; align-items: flex-end; text-align: right;
+              font-size: 0.58rem; line-height: 1.3; }
+  .qr-or { font-size: 0.5rem; }
+  .page-num { font-size: 0.85rem; margin-top: 3px; }
+}
 
 /* --- PRINT-ONLY SLIDES: frozen explorer settings that exist for the PDF.
        They are in SLIDE_DATA but never shown on the live deck. --- */
@@ -518,9 +532,9 @@
      force the row back to horizontal here, where source order lets it win. */
   .ht-row { flex-direction: row; align-items: center;
             gap: 20px; margin-top: 0.5rem; }
-  .ht-hub { padding: 1.1rem 1rem; min-width: 180px; }
-  .ht-hub-name { font-size: 1.2rem; }
-  .ht-hub-step { font-size: 0.7rem; }
+  .ht-hub { padding: 1.3rem 1.1rem; min-width: 200px; }
+  .ht-hub-name { font-size: 1.7rem; }
+  .ht-hub-step { font-size: 0.9rem; }
   .ht-tablewrap { overflow: visible; }
   .ht-table th, .ht-table td { padding: 2px 7px; font-size: 0.72rem; }
   .ht-fig img { max-height: 46vh; }

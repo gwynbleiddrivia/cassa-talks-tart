@@ -378,7 +378,6 @@ export default function App() {
 ) : slide.layout === "hub-image" ? (
   <div className="slide-content hubtable">
     <p className="stage-label">{slide.stage}</p>
-    <h1>{slide.title}</h1>
     <div className="ht-row">
       <div className="ht-hub">
         <span className="ht-hub-name">{slide.hub}</span>
@@ -394,7 +393,6 @@ export default function App() {
 ) : slide.layout === "hub-table" ? (
   <div className="slide-content hubtable">
     <p className="stage-label">{slide.stage}</p>
-    <h1>{slide.title}</h1>
     <div className="ht-row">
       <div className="ht-hub">
         <span className="ht-hub-name">{slide.hub}</span>
@@ -417,7 +415,6 @@ export default function App() {
 ) : slide.layout === "hub-aside" ? (
   <div className="slide-content converge">
     <p className="stage-label">{slide.stage}</p>
-    <h1>{slide.title}</h1>
     <svg className="cv-svg" viewBox="0 0 1100 560" role="img">
       <defs>
         <marker id="haArrow" viewBox="0 0 10 10" refX="9" refY="5"
@@ -431,10 +428,10 @@ export default function App() {
 
       <rect className="cv-hub-box" x="380" y="170" width="310" height="170" rx="10" />
       {slide.hub.map((ln, n) => (
-        <text key={n} className="cv-hub" x="535" y={222 + n * 42}
-              textAnchor="middle" fontSize="34">{ln}</text>
+        <text key={n} className="cv-hub" x="535" y={210 + n * 50}
+              textAnchor="middle" fontSize="42">{ln}</text>
       ))}
-      <text className="cv-sub" x="535" y="304" textAnchor="middle" fontSize="20">
+      <text className="cv-sub" x="535" y="306" textAnchor="middle" fontSize="24">
         {slide.hubStep}
       </text>
 
@@ -460,7 +457,6 @@ export default function App() {
 ) : slide.layout === "converge" ? (
   <div className="slide-content converge">
     <p className="stage-label">{slide.stage}</p>
-    <h1>{slide.title}</h1>
     <svg className="cv-svg" viewBox="0 0 1100 560" role="img">
       <defs>
         <marker id="cvArrow" viewBox="0 0 10 10" refX="9" refY="5"
@@ -469,8 +465,8 @@ export default function App() {
         </marker>
       </defs>
 
-      <rect className="cv-hub-box" x="400" y="190" width="300" height="180" rx="10" />
-      <text className="cv-hub" x="550" y="292" textAnchor="middle" fontSize="38">
+      <rect className="cv-hub-box" x="380" y="190" width="340" height="180" rx="10" />
+      <text className="cv-hub" x="550" y="297" textAnchor="middle" fontSize="48">
         {slide.hub}
       </text>
 
