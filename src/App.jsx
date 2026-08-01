@@ -64,8 +64,7 @@ const SLIDE_DATA = [
 
   {
     stage: "The Trick",
-    title: "What a Fringe Is — and How It Changes with Distance and Angle",
-    content: "A pair of antennas never sees a picture. It sees one striped pattern laid across the whole sky. Move the pair further apart and the stripes get finer; turn the pair and the stripes turn with it — always at a right angle to the line joining the two antennas.",
+    title: "An interferometer - fringe",
     layout: "img-interactive",
     image: "/fringe.png",
     caption: "Wavefronts arriving at two antennas: where they add, a bright band; where they cancel, a dark one. Close pair → bold bands. Far pair → fine bands.",
@@ -73,6 +72,21 @@ const SLIDE_DATA = [
 
     sep: 1.20, ang: 163, size: 160
   },
+
+  // ── PRINT-ONLY: three frozen settings of the same explorer, so the PDF shows
+  //    the variation the live sliders show. Hidden on screen via `printOnly`.
+  { stage: "The Trick", title: "An interferometer - fringe", layout: "img-interactive",
+    image: "/fringe.png", printOnly: true,
+    caption: "Close pair, 0.30 m apart — bold, widely spaced bands.",
+    sep: 0.30, ang: 30, size: 160 },
+  { stage: "The Trick", title: "An interferometer - fringe", layout: "img-interactive",
+    image: "/fringe.png", printOnly: true,
+    caption: "Same orientation, moved apart to 1.40 m — the bands get finer.",
+    sep: 1.40, ang: 30, size: 160 },
+  { stage: "The Trick", title: "An interferometer - fringe", layout: "img-interactive",
+    image: "/fringe.png", printOnly: true,
+    caption: "Same 1.40 m separation, pair rotated to 120° — the bands turn with it.",
+    sep: 1.40, ang: 120, size: 160 },
 
 
     { stage: "The Map", title: "A Baseline Becomes a Point",
@@ -99,7 +113,7 @@ const SLIDE_DATA = [
       { name: "Amplitude Calibration",    step: "calibrate_amplitude" },
       { name: "Phase Calibration",        step: "calibrate_phase" },
       { name: "Apply Calibration",        step: "applycal" },
-      { name: "CLEAN" }
+      { name: "CLEAN", step: "snapshotimage" }
     ]
   },
 
@@ -151,127 +165,66 @@ const SLIDE_DATA = [
     ]
   },
 
-  // ───────── SLIDES 7+: one interferometry stage each ─────────
+  // ───────── SLIDE 10: Antenna and UV plane (flowchart node 4) ─────────
   {
-    stage: "Stage 1 · Acquire", title: "Download Raw Visibilities", layout: "triptych",
-    concept: { heading: "What this does", points: [
-      "Interferometry starts from correlations, not images.",
-      "Each antenna pair → one complex visibility.",
-      "Pull a batch of snapshots off the telescope.",
-      "https://api.elec.ac.nz/tart/bd-iub/api/v1/info",
-      "https://api.elec.ac.nz/tart/bd-iub/api/v1/mode/current",
-      "https://api.elec.ac.nz/tart/bd-iub/api/v1/calibration/gain",
-      "https://api.elec.ac.nz/tart/bd-iub/api/v1/imaging/vis",
-    ]},
-    algorithm: { heading: "Algorithm", code: `make the working folders
-ask the TART API for N raw snapshots
-each snapshot = 276 baselines × complex vis` },
-    recipe: { heading: "Command", code: `mkdir stimela_images img rawdata caltables msdir
-stimela run tart_dl.yaml tart=bd-iub -s download-hdf` }
-  },
-  {
-    stage: "Stage 2 · Build", title: "Create the Measurement Set", layout: "triptych",
-    concept: { heading: "What this does", points: [
-      "Raw JSON → the standard radio dataset (MS).",
-      "Compute each baseline's (u,v) geometry.",
-      "Predict the known-satellite sky model."
-    ]},
-    algorithm: { heading: "Algorithm", code: `baseline (u,v) = position_j − position_i
-fetch GNSS catalogue (known positions)
-predict their model visibilities
-rephase everything to the zenith` },
-    recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s create-ms` }
+    stage: "Stage 3 · Inspect", title: "Antenna and UV plane", layout: "hub-image",
+    hub: "Antenna and UV plane",
+    hubSteps: ["plotuv", "plotants"],
+    image: "/stimela1.png"
   },
 
+  // ───────── SLIDE 11: Amplitude Calibration (flowchart node 5) ─────────
   {
-    stage: "Stage 3 · Prep", title: "Label & Safeguard", layout: "triptych",
-    concept: { heading: "What this does", points: [
-      "Tag the data so standard tools accept it.",
-      "Save a restore-point before we alter anything.",
-      "Every later step stays reversible."
-    ]},
-    algorithm: { heading: "Algorithm", code: `rename observatory → CASA/WSClean accept it
-snapshot the current flags as 'ORIGINAL'` },
-    recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s updateobservatory
-stimela run tart_dl.yaml tart=bd-iub -s flagsave` }
-  },
-  {
-    stage: "Stage 4 · Inspect", title: "See What the Array Samples", layout: "triptych",
-    concept: { heading: "What this does", points: [
-      "The baselines ARE the Fourier sampling.",
-      "Plot the uv-coverage and antenna layout.",
-      "This sparse set of points is all we know."
-    ]},
-    algorithm: { heading: "Algorithm", code: `plot each baseline as a point in the uv-plane
-plot the 24 antenna positions
-print an observation summary` },
-    recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s plotuv
-stimela run tart_dl.yaml tart=bd-iub -s plotants
-stimela run tart_dl.yaml tart=bd-iub -s lister` }
+    stage: "Stage 4 · Calibrate", title: "Amplitude Calibration", layout: "hub-image",
+    hub: "Amplitude Calibration",
+    hubSteps: ["calibrate_amplitude"],
+    image: "/stimela2.png"
   },
 
-
+  // ───────── SLIDE 12: Phase Calibration (flowchart node 6) ─────────
   {
-    stage: "Stage 5 · Calibrate", title: "Solve the Amplitudes", layout: "triptych",
-    concept: { heading: "What this does", points: [
-      "Each antenna has an unknown gain.",
-      "Match the data to the known-satellite model.",
-      "Normalise mean gain to 1 (no absolute flux)."
-    ]},
-    algorithm: { heading: "Algorithm", code: `find gain a_p so |a_p·a_q|·MODEL ≈ DATA
-average over the snapshot
-normalise mean |gain| → 1` },
-    recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s calibrate_amplitude
-stimela run tart_dl.yaml tart=bd-iub -s plotcaltable_amp` }
-  },
- 
-
-  {
-    stage: "Stage 6 · Calibrate", title: "Solve the Phases", layout: "triptych",
-    concept: { heading: "What this does", points: [
-      "Each antenna's clock is off by an unknown phase.",
-      "That's why sources don't focus.",
-      "Solve the offsets so fringe crests line up."
-    ]},
-    algorithm: { heading: "Algorithm", code: `baseline phase = true phase + (clock_p − clock_q)
-solve each antenna's clock offset (every 10 s)
-subtract it` },
-    recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s calibrate_phase
-stimela run tart_dl.yaml tart=bd-iub -s plotcaltable_phase` }
+    stage: "Stage 5 · Calibrate", title: "Phase Calibration", layout: "hub-image",
+    hub: "Phase Calibration",
+    hubSteps: ["calibrate_phase"],
+    image: "/stimela3.png"
   },
 
+  // ───────── SLIDE 13: Apply Calibration (flowchart node 7) ─────────
   {
-    stage: "Stage 7 · Apply", title: "Correct the Visibilities", layout: "triptych",
-    concept: { heading: "What this does", points: [
-      "Divide the solved gains out of every visibility.",
-      "Produces CORRECTED data, ready to image.",
-      "Dead antennas dropped — never ÷ by zero."
-    ]},
-    algorithm: { heading: "Algorithm", code: `CORRECTED = DATA / (gain_p · conj(gain_q)
-drop flagged / dead-antenna baselines` },
-    recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s applycal` }
+    stage: "Stage 6 · Apply", title: "Apply Calibration", layout: "hub-image",
+    hub: "Apply Calibration",
+    hubSteps: ["applycal"],
+    image: "/stimela4.png"
   },
 
+  // ───────── SLIDE 14: Apply Calibration, contd. — the corrected MS ─────────
   {
-    stage: "Stage 8 · Image", title: "Fourier-Invert & CLEAN", layout: "triptych",
-       concept: { heading: "What this does", points: [
-      "Fourier-sum the visibilities → the 'dirty' image: the true sky smeared by the array's messy beam.",
-      "Gaps in the uv-map make every source drag a splatter of rings and spikes (sidelobes).",
-      "CLEAN finds the brightest spot, records it as a point source, and subtracts that spot's known splatter — over and over.",
-      "Finally it repaints the recorded sources with one smooth, clean beam → the final image."
-    ]},
-    algorithm: { heading: "How CLEAN works", code: `dirty image = true sky ✳ dirty beam (PSF)
-loop:
-  find the brightest pixel
-  add a fraction of it to the model
-  subtract that fraction × shifted PSF
-until only noise remains
-restore: model ✳ clean beam + leftover noise` },
-
-    recipe: { heading: "Command", code: `stimela run tart_dl.yaml tart=bd-iub -s snapshotimage` }
+    stage: "Stage 6 · Apply", title: "Apply Calibration (contd.)", layout: "hub-table",
+    hub: "Apply Calibration", hubStep: "applycal",
+    cols: ["ANT1", "ANT2", "U (λ)", "V (λ)", "|DATA|", "phase°", "|MODEL|",
+           "|CORRECTED|", "corr. phase°"],
+    rows: [
+      ["0", "1",  "0.54",  "2.80", "0.383",   "65.7",  "8.602", "0.000",    "0.0"],
+      ["0", "2",  "1.88",  "4.37", "0.077", "-125.4", "11.071", "0.062",  "104.8"],
+      ["0", "3",  "3.47",  "5.13", "0.158",   "42.4",  "8.544", "0.000",    "0.0"],
+      ["0", "4",  "5.15",  "5.37", "0.101",  "118.1",  "6.074", "0.304",  "-73.4"],
+      ["0", "5",  "1.77", "-1.07", "0.212",  "-52.4", "10.236", "0.156",  "-51.8"],
+      ["0", "6",  "4.61", "-0.73", "0.190", "-145.6",  "9.615", "1.808", "-166.4"],
+      ["0", "7",  "6.52", "-1.52", "0.125", "-110.3",  "0.992", "0.074",  "-27.9"],
+      ["0", "8",  "7.71", "-2.81", "0.126",  "-42.5",  "1.256", "0.082",   "50.4"],
+      ["0", "9",  "8.43", "-4.34", "0.173",   "90.3", "14.141", "0.113",  "-96.8"],
+      ["0", "10", "1.29", "-3.10", "0.110",  "-46.2",  "9.976", "0.299",  "171.5"]
+    ]
   },
-  
-  { stage: "Stage 8 · Image", title: "The Final Sky", layout: "stack", images: ["/final.png"] },
+
+  // ───────── SLIDE 15: CLEAN (flowchart node 8) ─────────
+  {
+    stage: "Stage 7 · Image", title: "CLEAN", layout: "hub-image",
+    hub: "CLEAN",
+    hubSteps: ["snapshotimage"],
+    image: "/final.png"
+  },
+
     { stage: "Thanks", title: "Under One Sky",
     content: "Take the whole deck with you — and scan any slide to play with it live.",
     layout: "download", file: "/SSAEO-CT04_Khondoker.pdf" },
@@ -293,10 +246,14 @@ export default function App() {
 		      <main className="deck-viewport">
 		        {SLIDE_DATA.map((slide, i) => {
 				        const slideIndex = i + 1;
-				        const formattedNumber = String(slideIndex).padStart(2, '0');
+				        // print-only slides don't consume a number: each carries the
+				        // number of the visible slide it varies.
+				        const visibleCount = SLIDE_DATA.slice(0, i + 1).filter(s => !s.printOnly).length;
+				        const formattedNumber = String(visibleCount).padStart(2, '0');
 
 				        return (
-						          <section key={slideIndex} className="slide-page">
+						          <section key={slideIndex}
+						                   className={slide.printOnly ? "slide-page print-only" : "slide-page"}>
 						            <div className="minimalist-frame">
 						              
 						              <header className="slide-header">
@@ -376,7 +333,7 @@ export default function App() {
 ) : slide.layout === "img-interactive" ? (
   <div className="slide-content img-interactive">
     <h1>{slide.title}</h1>
-    <p className="description">{slide.content}</p>
+    {slide.content && <p className="description">{slide.content}</p>}
     <div className="ii-row">
       <figure className="ii-left">
         <img src={slide.image} alt="" />
@@ -390,6 +347,22 @@ export default function App() {
     </div>
   </div>
 
+) : slide.layout === "hub-image" ? (
+  <div className="slide-content hubtable">
+    <p className="stage-label">{slide.stage}</p>
+    <h1>{slide.title}</h1>
+    <div className="ht-row">
+      <div className="ht-hub">
+        <span className="ht-hub-name">{slide.hub}</span>
+        {slide.hubSteps.map((s, i) => (
+          <span key={i} className="ht-hub-step">{s}</span>
+        ))}
+      </div>
+      <figure className="ht-fig">
+        <img src={slide.image} alt="" />
+      </figure>
+    </div>
+  </div>
 ) : slide.layout === "hub-table" ? (
   <div className="slide-content hubtable">
     <p className="stage-label">{slide.stage}</p>
@@ -399,16 +372,18 @@ export default function App() {
         <span className="ht-hub-name">{slide.hub}</span>
         <span className="ht-hub-step">{slide.hubStep}</span>
       </div>
-      <table className="ht-table">
-        <thead>
-          <tr>{slide.cols.map((c, i) => <th key={i}>{c}</th>)}</tr>
-        </thead>
-        <tbody>
-          {slide.rows.map((r, i) => (
-            <tr key={i}>{r.map((val, j) => <td key={j}>{val}</td>)}</tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="ht-tablewrap">
+        <table className="ht-table">
+          <thead>
+            <tr>{slide.cols.map((c, i) => <th key={i}>{c}</th>)}</tr>
+          </thead>
+          <tbody>
+            {slide.rows.map((r, i) => (
+              <tr key={i}>{r.map((val, j) => <td key={j}>{val}</td>)}</tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 ) : slide.layout === "hub-aside" ? (
@@ -428,10 +403,10 @@ export default function App() {
 
       <rect className="cv-hub-box" x="380" y="170" width="310" height="170" rx="10" />
       {slide.hub.map((ln, n) => (
-        <text key={n} className="cv-hub" x="535" y={238 + n * 42}
+        <text key={n} className="cv-hub" x="535" y={222 + n * 42}
               textAnchor="middle" fontSize="34">{ln}</text>
       ))}
-      <text className="cv-sub" x="535" y="392" textAnchor="middle" fontSize="20">
+      <text className="cv-sub" x="535" y="304" textAnchor="middle" fontSize="20">
         {slide.hubStep}
       </text>
 

@@ -78,7 +78,7 @@
 
 											/* Stimela Data Typography */
 											.stage-label { font-family: monospace; text-transform: uppercase; color: #666; font-size: 0.9rem; margin-bottom: 0.5rem;}
-											.slide-content h1 { font-size: clamp(1.8rem, 4vw, 3rem); margin-bottom: 1rem; color: #000; }
+											.slide-content h1 { font-size: clamp(2.3rem, 5vw, 4rem); margin-bottom: 1rem; color: #000; }
 											.description { font-size: clamp(1rem, 1.5vw, 1.25rem); line-height: 1.6; color: #333; margin-bottom: 1.5rem; }
 											.math-box { background: #f4f4f6; padding: 1rem; border-left: 3px solid #000; margin-bottom: 1rem; font-family: monospace; overflow-x: auto; }
 											.ref-text { font-size: 0.8rem; font-family: monospace; color: #888; }
@@ -237,7 +237,7 @@
         font-family: monospace; font-size: clamp(0.8rem, 1.2vw, 1rem); }
 /* --- AGENDA (slide 4): the whole talk, listed --- */
 .slide-content.agenda { max-width: 100%; width: 100%; }
-.slide-content.agenda h1 { font-size: clamp(1.4rem, 2.5vw, 2.1rem);
+.slide-content.agenda h1 { font-size: clamp(1.8rem, 3.2vw, 2.7rem);
                            text-align: center; margin-bottom: 0.5rem; }
 .agenda-lead { font-size: clamp(0.95rem, 1.45vw, 1.3rem); line-height: 1.5; color: #222;
                max-width: 82ch; margin: 0 auto 1.5rem; text-align: center; }
@@ -264,7 +264,7 @@
 }
 /* --- IMG + INTERACTIVE: picture left, explorer right --- */
 .slide-content.img-interactive { max-width: 100%; width: 100%; }
-.slide-content.img-interactive h1 { font-size: clamp(1.35rem, 2.4vw, 2.1rem);
+.slide-content.img-interactive h1 { font-size: clamp(1.8rem, 3.2vw, 2.8rem);
                                     margin-bottom: 0.45rem; }
 .slide-content.img-interactive .description { font-size: clamp(0.9rem, 1.25vw, 1.1rem);
                                               max-width: 95ch; margin-bottom: 1rem; }
@@ -296,32 +296,44 @@
 .slide-content.flowchart { max-width: 100%; width: 100%; }
 .fc-grid { display: grid; grid-template-columns: repeat(4, 1fr);
            gap: 34px 46px; margin-top: 1.5rem; }
-.fc-node { position: relative; border: 2px solid #000; padding: 0.85rem 0.9rem;
+.fc-node { position: relative; padding: 0.85rem 0.9rem; border-radius: 8px;
+           background: #eaf2fe; border: 2px solid #1f6feb;
            display: flex; flex-direction: column; justify-content: center;
            gap: 0.3rem; text-align: center; min-width: 0; }
-.fc-name { font-weight: 700; line-height: 1.25; color: #000;
+.fc-name { font-weight: 700; line-height: 1.25; color: #0f2d5c;
            font-size: clamp(0.9rem, 1.35vw, 1.3rem); }
-.fc-step { font-family: monospace; color: #1f6feb; overflow-wrap: anywhere;
+.fc-step { font-family: monospace; color: #666; overflow-wrap: anywhere;
            font-size: clamp(0.68rem, 0.95vw, 0.95rem); }
 
-/* arrows: right inside a row of four, down at the end of each row */
+/* SERPENTINE: row 1 runs left→right, row 2 runs right→left, so the arrow
+   dropping off the end of row 1 lands on the node that actually comes next
+   instead of the one sitting underneath it. */
+.fc-node:nth-child(5) { grid-column: 4; grid-row: 2; }
+.fc-node:nth-child(6) { grid-column: 3; grid-row: 2; }
+.fc-node:nth-child(7) { grid-column: 2; grid-row: 2; }
+.fc-node:nth-child(8) { grid-column: 1; grid-row: 2; }
+
 .fc-node::after { content: "→"; position: absolute; right: -34px; top: 50%;
                   transform: translateY(-50%); font-size: 1.5rem;
                   color: #1f6feb; line-height: 1; }
 .fc-node:nth-child(4n)::after { content: "↓"; right: auto; left: 50%;
                                 top: auto; bottom: -30px;
                                 transform: translateX(-50%); }
+.fc-node:nth-child(n+5)::after { content: "←"; right: auto; left: -34px;
+                                 top: 50%; bottom: auto;
+                                 transform: translateY(-50%); }
 .fc-node:last-child::after { content: ""; }
 
+/* MOBILE: one column, every arrow points straight down */
 @media (max-width: 900px) {
-  .fc-grid { grid-template-columns: 1fr 1fr; gap: 30px 40px; }
+  .fc-grid { grid-template-columns: 1fr; gap: 34px; }
+  .fc-node:nth-child(5), .fc-node:nth-child(6),
+  .fc-node:nth-child(7), .fc-node:nth-child(8) { grid-column: 1; grid-row: auto; }
   .fc-node::after,
-  .fc-node:nth-child(4n)::after { content: "→"; right: -30px; left: auto;
-                                  top: 50%; bottom: auto;
-                                  transform: translateY(-50%); }
-  .fc-node:nth-child(2n)::after { content: "↓"; right: auto; left: 50%;
-                                  top: auto; bottom: -26px;
-                                  transform: translateX(-50%); }
+  .fc-node:nth-child(4n)::after,
+  .fc-node:nth-child(n+5)::after { content: "↓"; right: auto; left: 50%;
+                                   top: auto; bottom: -28px;
+                                   transform: translateX(-50%); }
   .fc-node:last-child::after { content: ""; }
 }
 
@@ -364,12 +376,32 @@
 .ht-hub-step { display: block; font-family: monospace; color: #666; margin-top: 8px;
                font-size: clamp(0.7rem, 1vw, 0.95rem); }
 
-.ht-table { flex: 1 1 auto; border-collapse: collapse; font-family: monospace; }
+.ht-hub-step + .ht-hub-step { margin-top: 2px; }
+
+.ht-tablewrap { flex: 1 1 auto; min-width: 0; overflow-x: auto; }
+.ht-table { width: 100%; border-collapse: collapse; font-family: monospace; }
 .ht-table th, .ht-table td { border: 1px solid #cfd6e0; padding: 4px 10px;
                              text-align: right; white-space: nowrap; }
 .ht-table th { background: #f4f4f6; font-weight: 700; color: #000;
                font-size: clamp(0.72rem, 1.05vw, 1rem); }
 .ht-table td { color: #222; font-size: clamp(0.72rem, 1.05vw, 1rem); }
+
+.ht-fig { flex: 1 1 auto; min-width: 0; margin: 0; }
+.ht-fig img { display: block; width: 100%; height: auto;
+              max-height: 60vh; object-fit: contain; }
+
+/* MOBILE: left panel on top, right panel below */
+@media (max-width: 900px) {
+  .ht-row { flex-direction: column; align-items: stretch; gap: 18px; }
+  .ht-hub { min-width: 0; padding: 1.2rem 1rem; }
+  .ht-fig img { max-height: 48vh; }
+}
+
+/* --- PRINT-ONLY SLIDES: frozen explorer settings that exist for the PDF.
+       They are in SLIDE_DATA but never shown on the live deck. --- */
+@media screen {
+  .slide-page.print-only { display: none; }
+}
 
 /* ============================================================
    PRINT OVERRIDES — MUST STAY LAST IN THIS FILE.
@@ -393,7 +425,7 @@
   .ii-right .ii-note { font-size: 1rem; margin-top: 12px; }
 
   /* free up the vertical room the explorer needs */
-  .slide-content.img-interactive h1 { font-size: 1.35rem; margin-bottom: 0.3rem; }
+  .slide-content.img-interactive h1 { font-size: 1.55rem; margin-bottom: 0.3rem; }
   .slide-content.img-interactive .description { font-size: 0.82rem; line-height: 1.45;
                                                margin-bottom: 0.7rem; }
 
@@ -414,13 +446,25 @@
   .cc-kicker { font-size: 0.62rem; }
   .concept-callout code { font-size: 0.85rem; }
 
-  /* FLOWCHART: one page */
-  .fc-grid { gap: 26px 38px; margin-top: 0.9rem; }
+  /* FLOWCHART: force the 4-column serpentine back — portrait paper is ~794px
+     wide, which fires the 900px single-column query above. */
+  .fc-grid { grid-template-columns: repeat(4, 1fr); gap: 26px 38px; margin-top: 0.9rem; }
   .fc-node { padding: 0.55rem 0.6rem; }
   .fc-name { font-size: 0.92rem; }
   .fc-step { font-size: 0.68rem; }
-  .fc-node::after { font-size: 1.15rem; right: -28px; }
-  .fc-node:nth-child(4n)::after { bottom: -23px; }
+  .fc-node:nth-child(5) { grid-column: 4; grid-row: 2; }
+  .fc-node:nth-child(6) { grid-column: 3; grid-row: 2; }
+  .fc-node:nth-child(7) { grid-column: 2; grid-row: 2; }
+  .fc-node:nth-child(8) { grid-column: 1; grid-row: 2; }
+  .fc-node::after { content: "→"; font-size: 1.15rem; right: -28px; left: auto;
+                    top: 50%; bottom: auto; transform: translateY(-50%); }
+  .fc-node:nth-child(4n)::after { content: "↓"; right: auto; left: 50%;
+                                  top: auto; bottom: -23px;
+                                  transform: translateX(-50%); }
+  .fc-node:nth-child(n+5)::after { content: "←"; right: auto; left: -28px;
+                                   top: 50%; bottom: auto;
+                                   transform: translateY(-50%); }
+  .fc-node:last-child::after { content: ""; }
 
   /* CONSTANT FOOTER: shrink hard so the triptychs keep their room */
   .slide-links { margin-top: 8px; padding: 0.35rem 0.55rem; gap: 4px 14px; }
@@ -430,11 +474,16 @@
   /* CONVERGE: leave room for the footer */
   .cv-svg { max-height: 50vh; }
 
-  /* HUB + TABLE: box and 10 rows on one page */
-  .ht-row { gap: 20px; margin-top: 0.5rem; }
+  /* HUB + TABLE / IMAGE: box and content share one page.
+     Portrait paper is ~794px wide, which fires the 900px mobile query above —
+     force the row back to horizontal here, where source order lets it win. */
+  .ht-row { flex-direction: row; align-items: center;
+            gap: 20px; margin-top: 0.5rem; }
   .ht-hub { padding: 1.1rem 1rem; min-width: 180px; }
   .ht-hub-name { font-size: 1.2rem; }
   .ht-hub-step { font-size: 0.7rem; }
+  .ht-tablewrap { overflow: visible; }
   .ht-table th, .ht-table td { padding: 2px 7px; font-size: 0.72rem; }
+  .ht-fig img { max-height: 46vh; }
 
 }
