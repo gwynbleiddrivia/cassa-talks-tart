@@ -397,6 +397,13 @@
   .ht-fig img { max-height: 48vh; }
 }
 
+/* --- PAGE NUMBER: bottom-right of every slide. In flow as the last child of
+       .minimalist-frame (which is a flex column), so it can never overlap the
+       links footer the way an absolutely-positioned one would. One small line. */
+.page-num { align-self: flex-end; flex: 0 0 auto; margin-top: 6px;
+            font-family: monospace; font-size: clamp(0.62rem, 0.85vw, 0.78rem);
+            letter-spacing: 0.5px; color: #999; user-select: none; }
+
 /* --- PRINT-ONLY SLIDES: frozen explorer settings that exist for the PDF.
        They are in SLIDE_DATA but never shown on the live deck. --- */
 @media screen {
@@ -473,6 +480,9 @@
 
   /* CONVERGE: leave room for the footer */
   .cv-svg { max-height: 50vh; }
+
+  /* PAGE NUMBER: smaller still on paper, and never its own page */
+  .page-num { margin-top: 4px; font-size: 0.58rem; color: #777; }
 
   /* HUB + TABLE / IMAGE: box and content share one page.
      Portrait paper is ~794px wide, which fires the 900px mobile query above —

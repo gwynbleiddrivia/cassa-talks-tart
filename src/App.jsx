@@ -27,7 +27,7 @@ const SLIDE_DATA = [
       { src: "/conf3.jpg", caption: "Prof. Tim Molteno lecturing" },
     ] },
 
-  { layout: "agenda", title: "What the Next 13 Minutes Look Like",
+  { layout: "agenda", title: "Overview of the talk",
     lead: "Interferometry: instead of one huge dish, link many small antennas — compare the waves each pair catches, and the maths turns them into a single giant telescope.",
     parts: [
       { num: "01", title: "Feel the Interferometry",
@@ -89,17 +89,36 @@ const SLIDE_DATA = [
     sep: 1.40, ang: 120, size: 160 },
 
 
-    { stage: "The Map", title: "A Baseline Becomes a Point",
+    { stage: "The Map", title: "Antennas and u-v plane",
     layout: "stack", images: ["/uv1.png"] },
-  { stage: "The Map", title: "Calibration Rotates the Arrows",
+  { stage: "The Map", title: "Visibility Vectors",
     layout: "stack", images: ["/uv2.png"] },
-  { stage: "The Map", title: "Corrected, Plus the Conjugate Twins",
+  { stage: "The Map", title: "Visibility Complex Conjugates",
     layout: "stack", images: ["/uv3.png"] },
-  { stage: "The Map", title: "The Complete uv-Map — and the To-Do List",
-    layout: "stack", images: ["/uv4.png"] },
 
-  { stage: "The Payoff", title: "Add the Fringes → the Sky Appears",
+  { stage: "The Payoff", title: "All Pairs in the Array - fringe",
     layout: "stack", images: [], after: "slider" },
+
+  // ── PRINT-ONLY: nine frozen frames of the same slider, so the PDF shows the
+  //    baselines accumulating the way the live control does. 34 frames exist.
+  { stage: "The Payoff", title: "All Pairs in the Array - fringe", printOnly: true,
+    layout: "stack", images: [], after: "slider", frame: 0 },
+  { stage: "The Payoff", title: "All Pairs in the Array - fringe", printOnly: true,
+    layout: "stack", images: [], after: "slider", frame: 3 },
+  { stage: "The Payoff", title: "All Pairs in the Array - fringe", printOnly: true,
+    layout: "stack", images: [], after: "slider", frame: 6 },
+  { stage: "The Payoff", title: "All Pairs in the Array - fringe", printOnly: true,
+    layout: "stack", images: [], after: "slider", frame: 10 },
+  { stage: "The Payoff", title: "All Pairs in the Array - fringe", printOnly: true,
+    layout: "stack", images: [], after: "slider", frame: 14 },
+  { stage: "The Payoff", title: "All Pairs in the Array - fringe", printOnly: true,
+    layout: "stack", images: [], after: "slider", frame: 19 },
+  { stage: "The Payoff", title: "All Pairs in the Array - fringe", printOnly: true,
+    layout: "stack", images: [], after: "slider", frame: 24 },
+  { stage: "The Payoff", title: "All Pairs in the Array - fringe", printOnly: true,
+    layout: "stack", images: [], after: "slider", frame: 29 },
+  { stage: "The Payoff", title: "All Pairs in the Array - fringe", printOnly: true,
+    layout: "stack", images: [], after: "slider", frame: 33 },
   
 
   // ───────── SLIDE 6: the whole pipeline in one picture ─────────
@@ -239,6 +258,11 @@ const SLIDE_DATA = [
 
 
 
+// Total shown in "N of TOTAL" — print-only variations don't count.
+const TOTAL_SLIDES = SLIDE_DATA.filter(s => !s.printOnly).length;
+// The links footer starts at the pipeline flowchart and runs to the end.
+const FOOTER_FROM = SLIDE_DATA.findIndex(s => s.layout === "flowchart");
+
 export default function App() {
 	  const currentUrl = typeof window !== 'undefined' ? window.location.href : 'https://stimela-talk.vercel.app';
 
@@ -249,16 +273,14 @@ export default function App() {
 				        // print-only slides don't consume a number: each carries the
 				        // number of the visible slide it varies.
 				        const visibleCount = SLIDE_DATA.slice(0, i + 1).filter(s => !s.printOnly).length;
-				        const formattedNumber = String(visibleCount).padStart(2, '0');
-
+				        
 				        return (
 						          <section key={slideIndex}
 						                   className={slide.printOnly ? "slide-page print-only" : "slide-page"}>
 						            <div className="minimalist-frame">
 						              
 						              <header className="slide-header">
-						                <span className="slide-num">{formattedNumber}</span>
-						                <div className="qr-container">
+						                						                <div className="qr-container">
 						                  <QRCodeSVG value={currentUrl} size={70} level={"L"} />
                                                                                                                 <span className="qr-label">
                                 <span className="qr-cta">SCAN TO PLAY WITH THIS SLIDE</span>
@@ -326,7 +348,7 @@ export default function App() {
             }
     <h1>{slide.title}</h1>
     <div className="img-stack">
-      {slide.after === "slider" && <FringeSlider />}
+      {slide.after === "slider" && <FringeSlider frame={slide.frame ?? null} />}
       {slide.images.map((src, k) => <img key={k} src={src} alt="" />)}
     </div>
   </div>
@@ -522,16 +544,20 @@ export default function App() {
   </div>
 )}
 
-<footer className="slide-links">
-  <div className="sl-item">
-    <span className="sl-kicker">TART map &amp; documentation</span>
-    <code>https://tart.elec.ac.nz/</code>
-  </div>
-  <div className="sl-item">
-    <span className="sl-kicker">Stimela recipes &amp; documentation</span>
-    <code>git clone https://github.com/gwynbleiddrivia/tart-stimela-run</code>
-  </div>
-</footer>
+{i >= FOOTER_FROM && (
+  <footer className="slide-links">
+    <div className="sl-item">
+      <span className="sl-kicker">TART map &amp; documentation</span>
+      <code>https://tart.elec.ac.nz/</code>
+    </div>
+    <div className="sl-item">
+      <span className="sl-kicker">Stimela recipes &amp; documentation</span>
+      <code>git clone https://github.com/gwynbleiddrivia/tart-stimela-run</code>
+    </div>
+  </footer>
+)}
+
+<div className="page-num">{visibleCount} of {TOTAL_SLIDES}</div>
 
 
 
