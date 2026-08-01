@@ -212,15 +212,15 @@
 .cover-logos img { height: clamp(56px, 12vh, 150px); width: auto;
                    max-width: 42%; object-fit: contain; }
 
-/* AGENDA part 02: the pipeline as a compact vertical chain, not a list */
-.agenda-chain { display: flex; flex-direction: column; gap: 15px; margin-top: 0.5rem; }
-.ac-node { position: relative; text-align: center; padding: 0.3rem 0.45rem;
-           background: #eaf2fe; border: 2px solid #1f6feb; border-radius: 6px;
-           color: #0f2d5c; font-weight: 700; line-height: 1.2;
-           font-size: clamp(0.72rem, 1.05vw, 1rem); }
+/* AGENDA part 02: the pipeline as soft rounded pills, not a bordered list */
+.agenda-chain { display: flex; flex-direction: column; gap: 16px; margin-top: 0.1rem; }
+.ac-node { position: relative; text-align: center; padding: 0.45rem 0.9rem;
+           background: #eaf2fe; border: none; border-radius: 999px;
+           color: #0f2d5c; font-weight: 700; line-height: 1.25;
+           font-size: clamp(0.95rem, 1.35vw, 1.25rem); }
 .ac-node::after { content: "↓"; position: absolute; left: 50%; bottom: -15px;
-                  transform: translateX(-50%); color: #1f6feb;
-                  font-size: 0.9rem; line-height: 1; }
+                  transform: translateX(-50%); color: #9dc0f0;
+                  font-size: 0.95rem; line-height: 1; }
 .ac-node:last-child::after { content: ""; }
 .cover-theme { font-family: monospace; text-transform: uppercase; letter-spacing: 2px;
                color: #1f6feb; font-size: clamp(0.8rem, 1.4vw, 1.1rem); }
@@ -258,22 +258,22 @@
 .slide-content.agenda { max-width: 100%; width: 100%; }
 .slide-content.agenda h1 { font-size: clamp(1.8rem, 3.2vw, 2.7rem);
                            text-align: center; margin-bottom: 0.5rem; }
-.agenda-lead { font-size: clamp(0.95rem, 1.45vw, 1.3rem); line-height: 1.5; color: #222;
-               max-width: 82ch; margin: 0 auto 1.5rem; text-align: center; }
-.agenda-cols { display: grid; grid-template-columns: 1fr 1fr 0.72fr;
-               gap: 28px; align-items: start; }
-.agenda-part { border-top: 3px solid #000; padding-top: 0.75rem; }
+.agenda-lead { font-size: clamp(1rem, 1.5vw, 1.35rem); line-height: 1.55; color: #333;
+               max-width: 68ch; margin: 0 auto 1.9rem; text-align: center; }
+.agenda-cols { display: grid; grid-template-columns: 1fr 1fr 0.62fr;
+               gap: 40px; align-items: start; }
+/* no hard black rules — the big pale numbers carry the structure instead */
+.agenda-part { padding-top: 0.25rem; }
 .part-num { display: block; font-family: monospace; font-weight: 900; line-height: 1;
-            font-size: clamp(1.5rem, 2.5vw, 2.3rem); color: #1f6feb; }
-.part-title { font-size: clamp(1rem, 1.65vw, 1.45rem); color: #000;
-              margin: 0.25rem 0 0.35rem; }
-.part-kicker { font-size: clamp(0.8rem, 1.05vw, 0.98rem); color: #666;
-               line-height: 1.4; margin-bottom: 0.7rem; }
-.agenda-part ol { margin: 0 0 0 1.4rem; padding: 0; }
-.agenda-part li { font-size: clamp(0.85rem, 1.12vw, 1.08rem); line-height: 1.5;
-                  color: #222; margin-bottom: 0.22rem; }
-.agenda-part.later { border-top-color: #bbb; opacity: 0.6; }
-.agenda-part.later .part-num { color: #999; }
+            font-size: clamp(1.5rem, 2.5vw, 2.3rem); color: #9dc0f0; }
+.part-title { font-size: clamp(1.2rem, 2vw, 1.8rem); color: #000;
+              margin: 0.3rem 0 0.9rem; }
+.part-kicker { display: none; }   /* three extra grey sentences nobody reads */
+.agenda-part ol { margin: 0; padding: 0; list-style: none; }
+.agenda-part li { font-size: clamp(1.05rem, 1.5vw, 1.5rem); line-height: 1.4;
+                  color: #222; margin-bottom: 0.8rem; }
+.agenda-part.later { opacity: 0.45; }
+.agenda-part.later .part-num { color: #ccc; }
 .agenda-part.later ol { list-style: none; margin-left: 0; }
 .agenda-part.later li { font-family: monospace; color: #555; }
 
@@ -499,6 +499,16 @@
 
   /* CONVERGE: leave room for the footer */
   .cv-svg { max-height: 50vh; }
+
+  /* AGENDA: bigger on screen, dialled back so it still fits one page */
+  .agenda-lead { font-size: 0.92rem; line-height: 1.4; margin-bottom: 0.9rem; }
+  .agenda-cols { gap: 22px; }
+  .part-num { font-size: 1.35rem; }
+  .part-title { font-size: 1.1rem; margin: 0.2rem 0 0.5rem; }
+  .agenda-part li { font-size: 0.92rem; line-height: 1.35; margin-bottom: 0.4rem; }
+  .agenda-chain { gap: 11px; }
+  .ac-node { font-size: 0.85rem; padding: 0.3rem 0.7rem; }
+  .ac-node::after { bottom: -11px; font-size: 0.8rem; }
 
   /* PAGE NUMBER: smaller still on paper, and never its own page */
   .page-num { margin-top: 4px; font-size: 1rem; color: #555; }
