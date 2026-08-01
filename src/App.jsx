@@ -116,6 +116,65 @@ const SLIDE_DATA = [
     ]
   },
 
+  // ───────── SLIDE 8: Downloading Visibilities (flowchart node 2) ─────────
+  {
+    stage: "Stage 1 · Acquire", title: "Downloading Visibilities", layout: "hub-aside",
+    hub: ["Downloading", "Visibilities"],
+    hubStep: "download-hdf",
+    source: { body: ["Pulls a bunch of snapshots", "off the telescope."] },
+    aside: {
+      head: "Explore the raw data",
+      base: "https://api.elec.ac.nz/tart/bd-iub",
+      paths: ["/api/v1/info",
+              "/api/v1/mode/current",
+              "/api/v1/calibration/gain",
+              "/api/v1/imaging/vis"]
+    }
+  },
+
+  // ───────── SLIDE 9: Measurement Set (flowchart node 3) ─────────
+  {
+    stage: "Stage 2 · Build", title: "Measurement Set", layout: "hub-table",
+    hub: "Measurement Set", hubStep: "create-ms",
+    lead: "One row per antenna pair. 24 antennas make 276 rows — here are the first 10, all of them antenna 0 paired with someone else.",
+    groups: [
+      { label: "which pair",   span: 2, tone: "a" },
+      { label: "where it sits in the uv-plane", span: 2, tone: "b" },
+      { label: "what we measured", span: 2, tone: "c" },
+      { label: "what the sky predicts", span: 1, tone: "d" }
+    ],
+    cols: ["ANT1", "ANT2", "U (λ)", "V (λ)", "|DATA|", "phase°", "|MODEL|"],
+    highlight: 5,
+    rows: [
+      ["0", "1",  "0.54",  "2.80", "0.383",   "65.7",  "8.602"],
+      ["0", "2",  "1.88",  "4.37", "0.077", "-125.4", "11.071"],
+      ["0", "3",  "3.47",  "5.13", "0.158",   "42.4",  "8.544"],
+      ["0", "4",  "5.15",  "5.37", "0.101",  "118.1",  "6.074"],
+      ["0", "5",  "1.77", "-1.07", "0.212",  "-52.4", "10.236"],
+      ["0", "6",  "4.61", "-0.73", "0.190", "-145.6",  "9.615"],
+      ["0", "7",  "6.52", "-1.52", "0.125", "-110.3",  "0.992"],
+      ["0", "8",  "7.71", "-2.81", "0.126",  "-42.5",  "1.256"],
+      ["0", "9",  "8.43", "-4.34", "0.173",   "90.3", "14.141"],
+      ["0", "10", "1.29", "-3.10", "0.110",  "-46.2",  "9.976"]
+    ],
+    note: "The highlighted row is antennas 0 and 6 — a pair sitting 4.7 wavelengths apart. It measured 0.190 at -145.6°. That single complex number is one dot in the uv-plane; the whole table is the telescope's raw output."
+  },
+
+  // ───────── SLIDE 8: Downloading Visibilities (flowchart node 2) ─────────
+  {
+    stage: "Stage 1 · Acquire", title: "Downloading Visibilities", layout: "hub-aside",
+    hub: ["Downloading", "Visibilities"],
+    source: ["Pulls a bunch of", "snapshots off", "the telescope"],
+    aside: {
+      head: "Explore the raw data",
+      base: "https://api.elec.ac.nz/tart/bd-iub",
+      paths: ["/api/v1/info",
+              "/api/v1/mode/current",
+              "/api/v1/calibration/gain",
+              "/api/v1/imaging/vis"]
+    }
+  },
+
   // ───────── SLIDES 7+: one interferometry stage each ─────────
   {
     stage: "Stage 1 · Acquire", title: "Download Raw Visibilities", layout: "triptych",
@@ -355,6 +414,86 @@ export default function App() {
     </div>
   </div>
 
+) : slide.layout === "hub-table" ? (
+  <div className="slide-content hubtable">
+    <p className="stage-label">{slide.stage}</p>
+    <h1>{slide.title}</h1>
+    <div className="ht-head">
+      <div className="ht-hub">
+        <span className="ht-hub-name">{slide.hub}</span>
+        <span className="ht-hub-step">{slide.hubStep}</span>
+      </div>
+      <p className="ht-lead">{slide.lead}</p>
+    </div>
+    <table className="ht-table">
+      <colgroup>
+        {slide.groups.map((g, i) => (
+          <col key={i} span={g.span} className={"ht-" + g.tone} />
+        ))}
+      </colgroup>
+      <thead>
+        <tr>
+          {slide.groups.map((g, i) => (
+            <th key={i} colSpan={g.span} className={"ht-group ht-" + g.tone}>{g.label}</th>
+          ))}
+        </tr>
+        <tr>
+          {slide.cols.map((c, i) => <th key={i} className="ht-col">{c}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {slide.rows.map((r, i) => (
+          <tr key={i} className={i === slide.highlight ? "ht-hl" : undefined}>
+            {r.map((val, j) => <td key={j}>{val}</td>)}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+    {slide.note && <p className="ht-note">{slide.note}</p>}
+  </div>
+) : slide.layout === "hub-aside" ? (
+  <div className="slide-content converge">
+    <p className="stage-label">{slide.stage}</p>
+    <h1>{slide.title}</h1>
+    <svg className="cv-svg" viewBox="0 0 1100 560" role="img">
+      <defs>
+        <marker id="haArrow" viewBox="0 0 10 10" refX="9" refY="5"
+                markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f6feb" />
+        </marker>
+      </defs>
+
+      <path className="cv-link" d="M 330 440 C 385 437, 425 420, 430 344"
+            markerEnd="url(#haArrow)" />
+
+      <rect className="cv-hub-box" x="380" y="170" width="310" height="170" rx="10" />
+      {slide.hub.map((ln, n) => (
+        <text key={n} className="cv-hub" x="535" y={238 + n * 42}
+              textAnchor="middle" fontSize="34">{ln}</text>
+      ))}
+      <text className="cv-sub" x="535" y="392" textAnchor="middle" fontSize="20">
+        {slide.hubStep}
+      </text>
+
+      <rect className="cv-box" x="40" y="380" width="290" height="120" rx="8" />
+      {slide.source.body.map((ln, n) => (
+        <text key={n} className="cv-body" x="185" y={424 + n * 26}
+              textAnchor="middle" fontSize="16">{ln}</text>
+      ))}
+
+      <rect className="cv-aside-box" x="740" y="130" width="330" height="300" rx="8" />
+      <text className="cv-head" x="905" y="186" textAnchor="middle" fontSize="20">
+        {slide.aside.head}
+      </text>
+      <text className="cv-body" x="905" y="222" textAnchor="middle" fontSize="14">
+        {slide.aside.base}
+      </text>
+      {slide.aside.paths.map((p, n) => (
+        <text key={n} className="cv-path" x="768" y={264 + n * 32}
+              fontSize="17">{p}</text>
+      ))}
+    </svg>
+  </div>
 ) : slide.layout === "converge" ? (
   <div className="slide-content converge">
     <p className="stage-label">{slide.stage}</p>
