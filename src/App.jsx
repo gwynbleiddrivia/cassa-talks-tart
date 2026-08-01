@@ -151,21 +151,6 @@ const SLIDE_DATA = [
     ]
   },
 
-  // ───────── SLIDE 8: Downloading Visibilities (flowchart node 2) ─────────
-  {
-    stage: "Stage 1 · Acquire", title: "Downloading Visibilities", layout: "hub-aside",
-    hub: ["Downloading", "Visibilities"],
-    source: ["Pulls a bunch of", "snapshots off", "the telescope"],
-    aside: {
-      head: "Explore the raw data",
-      base: "https://api.elec.ac.nz/tart/bd-iub",
-      paths: ["/api/v1/info",
-              "/api/v1/mode/current",
-              "/api/v1/calibration/gain",
-              "/api/v1/imaging/vis"]
-    }
-  },
-
   // ───────── SLIDES 7+: one interferometry stage each ─────────
   {
     stage: "Stage 1 · Acquire", title: "Download Raw Visibilities", layout: "triptych",
