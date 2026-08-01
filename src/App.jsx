@@ -136,15 +136,7 @@ const SLIDE_DATA = [
   {
     stage: "Stage 2 · Build", title: "Measurement Set", layout: "hub-table",
     hub: "Measurement Set", hubStep: "create-ms",
-    lead: "One row per antenna pair. 24 antennas make 276 rows — here are the first 10, all of them antenna 0 paired with someone else.",
-    groups: [
-      { label: "which pair",   span: 2, tone: "a" },
-      { label: "where it sits in the uv-plane", span: 2, tone: "b" },
-      { label: "what we measured", span: 2, tone: "c" },
-      { label: "what the sky predicts", span: 1, tone: "d" }
-    ],
     cols: ["ANT1", "ANT2", "U (λ)", "V (λ)", "|DATA|", "phase°", "|MODEL|"],
-    highlight: 5,
     rows: [
       ["0", "1",  "0.54",  "2.80", "0.383",   "65.7",  "8.602"],
       ["0", "2",  "1.88",  "4.37", "0.077", "-125.4", "11.071"],
@@ -156,8 +148,7 @@ const SLIDE_DATA = [
       ["0", "8",  "7.71", "-2.81", "0.126",  "-42.5",  "1.256"],
       ["0", "9",  "8.43", "-4.34", "0.173",   "90.3", "14.141"],
       ["0", "10", "1.29", "-3.10", "0.110",  "-46.2",  "9.976"]
-    ],
-    note: "The highlighted row is antennas 0 and 6 — a pair sitting 4.7 wavelengths apart. It measured 0.190 at -145.6°. That single complex number is one dot in the uv-plane; the whole table is the telescope's raw output."
+    ]
   },
 
   // ───────── SLIDE 8: Downloading Visibilities (flowchart node 2) ─────────
@@ -418,38 +409,22 @@ export default function App() {
   <div className="slide-content hubtable">
     <p className="stage-label">{slide.stage}</p>
     <h1>{slide.title}</h1>
-    <div className="ht-head">
+    <div className="ht-row">
       <div className="ht-hub">
         <span className="ht-hub-name">{slide.hub}</span>
         <span className="ht-hub-step">{slide.hubStep}</span>
       </div>
-      <p className="ht-lead">{slide.lead}</p>
-    </div>
-    <table className="ht-table">
-      <colgroup>
-        {slide.groups.map((g, i) => (
-          <col key={i} span={g.span} className={"ht-" + g.tone} />
-        ))}
-      </colgroup>
-      <thead>
-        <tr>
-          {slide.groups.map((g, i) => (
-            <th key={i} colSpan={g.span} className={"ht-group ht-" + g.tone}>{g.label}</th>
+      <table className="ht-table">
+        <thead>
+          <tr>{slide.cols.map((c, i) => <th key={i}>{c}</th>)}</tr>
+        </thead>
+        <tbody>
+          {slide.rows.map((r, i) => (
+            <tr key={i}>{r.map((val, j) => <td key={j}>{val}</td>)}</tr>
           ))}
-        </tr>
-        <tr>
-          {slide.cols.map((c, i) => <th key={i} className="ht-col">{c}</th>)}
-        </tr>
-      </thead>
-      <tbody>
-        {slide.rows.map((r, i) => (
-          <tr key={i} className={i === slide.highlight ? "ht-hl" : undefined}>
-            {r.map((val, j) => <td key={j}>{val}</td>)}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-    {slide.note && <p className="ht-note">{slide.note}</p>}
+        </tbody>
+      </table>
+    </div>
   </div>
 ) : slide.layout === "hub-aside" ? (
   <div className="slide-content converge">
