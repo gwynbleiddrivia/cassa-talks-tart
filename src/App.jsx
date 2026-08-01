@@ -32,9 +32,9 @@ const SLIDE_DATA = [
     parts: [
       // items for parts 01 and 02 are read straight off the real slide titles
       // (see AGENDA_PART1 / AGENDA_PART2 below) so this list can never drift.
-      { num: "01", title: "Feel the Interferometry", auto: 1,
+      { num: "01", title: "Interferometry", auto: 1,
         kicker: "TART lets you build the radio sky by eye — no equations needed." },
-      { num: "02", title: "Run the Software Pipeline", auto: 2,
+      { num: "02", title: "Software Pipeline", auto: 2,
         kicker: "The same picture, reproduced step by step from open data by open software." },
       { num: "03", title: "The Hardware", later: true,
         kicker: "24 antennas, the correlator, the rooftop build.",
