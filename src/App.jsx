@@ -252,7 +252,8 @@ const agendaTitles = (from, to) => SLIDE_DATA.slice(from, to)
   .filter(s => !s.printOnly && s.title && s.layout !== "download")
   .map(s => s.title);
 const AGENDA_PART1 = agendaTitles(AGENDA_START, FOOTER_FROM + 1);
-const AGENDA_PART2 = agendaTitles(FOOTER_FROM + 1, SLIDE_DATA.length);
+// Part 02 shows the pipeline itself rather than a list of nine slide titles.
+const PIPELINE_STEPS = (SLIDE_DATA[FOOTER_FROM] && SLIDE_DATA[FOOTER_FROM].steps) || [];
 
 export default function App() {
 	  const currentUrl = typeof window !== 'undefined' ? window.location.href : 'https://stimela-talk.vercel.app';
@@ -304,9 +305,16 @@ export default function App() {
           <span className="part-num">{p.num}</span>
           <h2 className="part-title">{p.title}</h2>
           <p className="part-kicker">{p.kicker}</p>
-          <ol>{(p.auto === 1 ? AGENDA_PART1
-                : p.auto === 2 ? AGENDA_PART2
-                : p.items).map((it, n) => <li key={n}>{it}</li>)}</ol>
+          {p.auto === 2 ? (
+            <div className="agenda-chain">
+              {PIPELINE_STEPS.map((s, n) => (
+                <span key={n} className="ac-node">{s.name}</span>
+              ))}
+            </div>
+          ) : (
+            <ol>{(p.auto === 1 ? AGENDA_PART1 : p.items)
+                 .map((it, n) => <li key={n}>{it}</li>)}</ol>
+          )}
         </div>
       ))}
     </div>
@@ -542,7 +550,7 @@ export default function App() {
   </div>
 )}
 
-{i >= FOOTER_FROM && (
+{i >= FOOTER_FROM && slide.layout !== "download" && (
   <footer className="slide-links">
     <div className="sl-item">
       <span className="sl-kicker">TART map &amp; documentation</span>
